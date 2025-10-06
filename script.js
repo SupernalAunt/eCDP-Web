@@ -1,22 +1,27 @@
-function startModule(moduleName) {
-  window.location.href = `modules/${moduleName}.html`;
-}
+function handleLogin() {
+  // Hide login screen
+  document.getElementById('loginScreen').style.display = 'none';
 
-window.addEventListener('DOMContentLoaded', () => {
+  // Play intro music
+  const introMusic = document.getElementById('introMusic');
+  introMusic.play();
+
+  // Wait a few seconds before showing main menu
   setTimeout(() => {
-    // Stop intro music and video
-    const introMusic = document.getElementById('introMusic');
-    const introVideo = document.getElementById('introVideo');
     introMusic.pause();
     introMusic.currentTime = 0;
-    introVideo.pause();
-    introVideo.currentTime = 0;
 
-    // Hide intro, show title screen
-    document.getElementById('intro').style.display = 'none';
-    document.getElementById('titleScreen').style.display = 'block';
+    document.getElementById('mainMenu').style.display = 'block';
+  }, 5000); // 5 seconds delay
+}
 
-    // Start looping background music
-    document.getElementById('loopMusic').play();
-  }, 30000); // 30 seconds
-});
+function startModule(moduleName) {
+  // Start looping background music
+  const loopMusic = document.getElementById('loopMusic');
+  if (loopMusic.paused) {
+    loopMusic.play();
+  }
+
+  // Navigate to module
+  window.location.href = `modules/${moduleName}.html`;
+}
