@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Intro Section -->
-  <div id="intro">
-    <video id="introVideo" src="videos/intro.mp4" autoplay muted></video>
-    <audio id="introMusic" src="assets/audio/BG_04.wav" autoplay></audio>
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <h1>Welcome to <span style="color:#d00000;">eCDP Web</span></h1>
+    <button onclick="handleLogin()">Login</button>
   </div>
 
-  <!-- Title Screen -->
-  <div id="titleScreen" style="display:none;">
-    <h1>Welcome to <span style="color:#d00000;">eCDP Web</span></h1>
+  <!-- Main Menu -->
+  <div id="mainMenu" style="display:none;">
+    <h2>Main Menu</h2>
     <nav>
       <button onclick="startModule('order-taking')">Order Taking</button>
       <button onclick="startModule('kitchen-prep')">Kitchen Prep</button>
@@ -23,6 +23,9 @@
     </nav>
     <audio id="loopMusic" src="assets/audio/BG_09.wav" loop></audio>
   </div>
+
+  <!-- Intro Music -->
+  <audio id="introMusic" src="assets/audio/BG_04.wav"></audio>
 
   <script src="script.js"></script>
 </body>
