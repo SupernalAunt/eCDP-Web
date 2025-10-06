@@ -1,46 +1,154 @@
+/* Base layout */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f0f4fa;
+  background-color: #eaf0f9;
   margin: 0;
   padding: 0;
   color: #1c1c1c;
 }
 
+/* Container styling */
 .container {
-  max-width: 900px;
-  margin: 2em auto;
+  max-width: 960px;
+  margin: 3em auto;
   padding: 2em;
   background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
+/* Logo styling */
 .logo {
   display: block;
-  margin: 0 auto 1em;
-  max-width: 140px;
+  margin: 0 auto 1.5em;
+  max-width: 120px;
 }
 
-nav button, .controls button {
+/* Headings */
+h1, h2, h3 {
+  text-align: center;
+  color: #2a5d9f;
+  margin-bottom: 0.5em;
+}
+
+p {
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
+/* Form inputs */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+select {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0.5em auto;
+  padding: 0.6em;
+  font-size: 1em;
+  border: 1px solid #cbd6e2;
+  border-radius: 6px;
+  background-color: #f7f9fc;
+}
+
+/* Buttons */
+button {
+  display: inline-block;
   background-color: #2a5d9f;
   color: white;
   border: none;
-  padding: 0.8em 1.2em;
+  padding: 0.8em 1.4em;
+  margin: 0.5em;
   border-radius: 6px;
   font-size: 1em;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-nav button:hover, .controls button:hover {
+button:hover {
   background-color: #1f4a80;
 }
 
+/* Navigation */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 2em;
+}
+
+/* Ingredient tray and burger stack */
+#ingredientTray, #burgerStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1em auto;
+}
+
+.ingredient {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: grab;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  width: 140px;
+}
+
+.slot {
+  width: 140px;
+  height: 30px;
+  margin: 5px;
+  border: 2px dashed #cbd6e2;
+  text-align: center;
+  line-height: 30px;
+  font-weight: bold;
+  background-color: #f4f7fb;
+}
+
+/* Feedback messages */
+.happy {
+  color: green;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.sad {
+  color: red;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.material-icons.large {
+  font-size: 48px;
+  color: red;
+  vertical-align: middle;
+}
+
+/* Hint area */
+#hintArea {
+  margin-top: 1em;
+  padding: 1em;
+  background: #f7f9fc;
+  border: 1px solid #cbd6e2;
+  border-radius: 6px;
+}
+
+/* Volume control */
+input[type="range"] {
+  width: 200px;
+  margin-top: 0.5em;
+}
+
+/* Footer */
 footer {
   margin-top: 3em;
   padding: 1em;
   text-align: center;
-  background-color: #e6ecf5;
+  background-color: #dbe5f3;
   border-top: 1px solid #cbd6e2;
 }
 
