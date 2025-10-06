@@ -7,39 +7,40 @@
   <link rel="stylesheet" href="../style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* Quiz card layout */
+    /* Quiz card for single question */
     .question-card {
       background: #fff;
       border: 1px solid #ccc;
       border-radius: 10px;
-      padding: 1em;
-      margin: 1em 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 1.5em;
+      margin: 2em auto;
+      max-width: 600px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      text-align: center;
     }
 
     .question-card p {
       font-weight: 600;
-      margin-bottom: 0.5em;
+      font-size: 1.1em;
+      margin-bottom: 1em;
     }
 
     .option-label {
       display: block;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 0.5em;
-      margin: 0.4em 0;
+      border-radius: 8px;
+      padding: 0.8em;
+      margin: 0.5em 0;
       cursor: pointer;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      transition: background-color 0.2s, border-color 0.2s;
     }
 
     .option-label:hover {
-      background-color: #f9f2e7; /* light gold hover */
+      background-color: #f9f2e7;
       border-color: #d62c1a;
     }
 
-    input[type="radio"] {
-      display: none;
-    }
+    input[type="radio"] { display: none; }
 
     input[type="radio"]:checked + .option-label {
       border-color: #d62c1a;
@@ -47,32 +48,45 @@
     }
 
     .explanation {
-      margin-top: 0.5em;
+      margin-top: 1em;
       font-size: 0.95em;
       display: none;
-      padding: 0.5em;
-      border-left: 3px solid #d62c1a;
+      padding: 0.8em;
+      border-left: 4px solid #d62c1a;
       background-color: #fff7e6;
     }
 
-    .explanation.correct {
-      border-left-color: #ffc72c;
+    .explanation.correct { border-left-color: #ffc72c; }
+    .explanation.incorrect { border-left-color: #d62c1a; }
+
+    #nextBtn {
+      margin-top: 1.5em;
+      display: none;
+      background-color: #d62c1a;
+      color: white;
+      border: none;
+      padding: 0.8em 1.5em;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s;
     }
 
-    .explanation.incorrect {
-      border-left-color: #d62c1a;
-    }
+    #nextBtn:hover { background-color: #b52717; }
   </style>
 </head>
 <body>
   <div class="container">
     <img src="../assets/images/logo.png" alt="eCDP Logo" class="logo" />
     <h2>Order Taking Quiz</h2>
-    <p>Answer 10 random questions to sharpen your skills. Explanations appear immediately.</p>
+    <p>Answer one question at a time. Read the explanation, then click Next.</p>
 
     <div id="quizArea"></div>
+    <div style="text-align:center;">
+      <button id="nextBtn" onclick="nextQuestion()">Next Question <span class="material-icons">arrow_forward</span></button>
+    </div>
 
-    <div class="controls" style="text-align:center;">
+    <div class="controls" style="text-align:center; margin-top:2em;">
       <button onclick="goToMenu()"><span class="material-icons">arrow_back</span> Back to Menu</button>
       <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
       <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
@@ -87,73 +101,85 @@
   <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
 
   <script>
-    const allQuestions = [
-      { question: "What’s the first thing you should do when a customer approaches the counter?",
-        options: ["Ask what they want", "Greet them politely with a smile", "Wait silently", "Look at the register"],
-        answer: 1, explanation: "A warm greeting creates a positive first impression and sets the tone for good service." },
-      { question: "When a customer says “Can I get a Big Mac meal?”, what should you ask next?",
-        options: ["Anything else?", "Is that large or medium?", "What drink?", "For here or to go?"],
-        answer: 1, explanation: "Always clarify the size before confirming the rest of the order." },
-      /* add rest of your 25 questions here */
-    ];
+    let allQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-    let currentSession = [];
+    // Load questions from JSON file
+    fetch('../modules/order-taking.json')
+      .then(response => response.json())
+      .then(data => {
+        allQuestions = data;
+        allQuestions = allQuestions.sort(() => Math.random() - 0.5); // shuffle
+        showQuestion();
+      })
+      .catch(err => console.error("Error loading questions:", err));
 
-    function shuffleArray(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
-
-    function loadSession() {
-      currentSession = shuffleArray([...allQuestions]).slice(0, 10);
+    function showQuestion() {
       const quizArea = document.getElementById("quizArea");
       quizArea.innerHTML = "";
+      document.getElementById("nextBtn").style.display = "none";
 
-      currentSession.forEach((q, i) => {
-        const card = document.createElement("div");
-        card.className = "question-card";
+      if (currentQuestionIndex >= allQuestions.length) {
+        quizArea.innerHTML = `<p>You completed the quiz! Your score: ${score} / ${allQuestions.length}</p>`;
+        return;
+      }
 
-        const qText = document.createElement("p");
-        qText.textContent = `${i + 1}. ${q.question}`;
-        card.appendChild(qText);
+      const q = allQuestions[currentQuestionIndex];
+      const card = document.createElement("div");
+      card.className = "question-card";
 
-        q.options.forEach((opt, j) => {
-          const radio = document.createElement("input");
-          radio.type = "radio";
-          radio.name = `q${i}`;
-          radio.value = j;
-          radio.id = `q${i}opt${j}`;
+      const qText = document.createElement("p");
+      qText.textContent = `Question ${currentQuestionIndex + 1}: ${q.question}`;
+      card.appendChild(qText);
 
-          const label = document.createElement("label");
-          label.htmlFor = radio.id;
-          label.className = "option-label";
-          label.textContent = opt;
+      q.options.forEach((opt, j) => {
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "currentQ";
+        radio.value = j;
+        radio.id = `opt${j}`;
 
-          radio.addEventListener("change", () => showExplanation(i, j));
+        const label = document.createElement("label");
+        label.htmlFor = radio.id;
+        label.className = "option-label";
+        label.textContent = opt;
 
-          card.appendChild(radio);
-          card.appendChild(label);
-        });
+        radio.addEventListener("change", () => showExplanation(j));
 
-        const explanation = document.createElement("div");
-        explanation.className = "explanation";
-        explanation.id = `exp${i}`;
-        card.appendChild(explanation);
-
-        quizArea.appendChild(card);
+        card.appendChild(radio);
+        card.appendChild(label);
       });
+
+      const explanationDiv = document.createElement("div");
+      explanationDiv.className = "explanation";
+      explanationDiv.id = "exp";
+      card.appendChild(explanationDiv);
+
+      quizArea.appendChild(card);
     }
 
-    function showExplanation(qIndex, selectedIndex) {
-      const q = currentSession[qIndex];
-      const expDiv = document.getElementById(`exp${qIndex}`);
+    function showExplanation(selectedIndex) {
+      const q = allQuestions[currentQuestionIndex];
+      const expDiv = document.getElementById("exp");
+      const nextBtn = document.getElementById("nextBtn");
+
       if (selectedIndex === q.answer) {
+        score++;
         expDiv.className = "explanation correct";
         expDiv.innerHTML = `<span class="material-icons">check_circle</span> Correct! ${q.explanation}`;
       } else {
         expDiv.className = "explanation incorrect";
         expDiv.innerHTML = `<span class="material-icons">cancel</span> Incorrect. ${q.explanation}`;
       }
+
       expDiv.style.display = "block";
+      nextBtn.style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      showQuestion();
     }
 
     function goToMenu() {
@@ -163,8 +189,6 @@
     function adjustVolume(value) {
       document.getElementById("bgMusic").volume = parseFloat(value);
     }
-
-    loadSession();
   </script>
 </body>
 </html>
