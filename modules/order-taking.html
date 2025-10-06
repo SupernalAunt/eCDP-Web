@@ -37,6 +37,13 @@
       color: red;
       vertical-align: middle;
     }
+    #hintArea {
+      margin-top: 1em;
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -50,7 +57,10 @@
     <div id="burgerStack"></div>
 
     <button onclick="submitBurger()">Submit Order</button>
+    <button onclick="resetStack()">Reset Stack</button>
+    <button onclick="showHint()">Hint</button>
     <div id="feedback"></div>
+    <div id="hintArea" style="display:none;"></div>
   </div>
 
   <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
@@ -94,18 +104,23 @@
       tray.appendChild(item);
     });
 
-    for (let i = 0; i < selected.order.length; i++) {
-      const slot = document.createElement("div");
-      slot.className = "slot";
-      slot.addEventListener("dragover", e => e.preventDefault());
-      slot.addEventListener("drop", e => {
-        const name = e.dataTransfer.getData("text/plain");
-        slot.textContent = name;
-        slot.style.backgroundColor = ingredients[name] || "#999";
-        slot.dataset.name = name;
-      });
-      stack.appendChild(slot);
+    function buildStack() {
+      stack.innerHTML = "";
+      for (let i = 0; i < selected.order.length; i++) {
+        const slot = document.createElement("div");
+        slot.className = "slot";
+        slot.addEventListener("dragover", e => e.preventDefault());
+        slot.addEventListener("drop", e => {
+          const name = e.dataTransfer.getData("text/plain");
+          slot.textContent = name;
+          slot.style.backgroundColor = ingredients[name] || "#999";
+          slot.dataset.name = name;
+        });
+        stack.appendChild(slot);
+      }
     }
+
+    buildStack();
 
     let timeLeft = 180;
     const timer = setInterval(() => {
@@ -119,10 +134,7 @@
 
     function submitBurger() {
       clearInterval(timer);
-      const slots = Array.from(document.querySelectorAll(".slot"))
-        .map(s => s.dataset.name)
-        .filter(name => name); // Ignore empty slots
-
+      const slots = Array.from(document.querySelectorAll(".slot")).map(s => s.dataset.name || "");
       const correct = selected.order;
       let score = 0;
 
@@ -142,6 +154,24 @@
       }
 
       document.getElementById("feedback").innerHTML = feedback;
+    }
+
+    function showHint() {
+      const hintArea = document.getElementById("hintArea");
+      hintArea.style.display = "block";
+      hintArea.innerHTML = `
+        <h4>Training Tip: How to Build a "${selected.name}"</h4>
+        <p>Stack the ingredients in this exact order from top to bottom:</p>
+        <ul>
+          ${selected.order.map(item => `<li><strong>${item}</strong></li>`).join("")}
+        </ul>
+        <p>Each layer matters! Pay attention to the sequence and ingredient types.</p>
+      `;
+    }
+
+    function resetStack() {
+      buildStack();
+      document.getElementById("feedback").innerHTML = "";
     }
   </script>
 </body>
