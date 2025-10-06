@@ -1,0 +1,176 @@
+[
+  {
+    "question": "What’s the first thing you should do when a customer approaches the counter?",
+    "options": ["Ask what they want", "Greet them politely with a smile", "Wait silently", "Look at the register"],
+    "answer": 1,
+    "explanation": "A warm greeting creates a positive first impression and sets the tone for good service."
+  },
+  {
+    "question": "When a customer says 'Can I get a Big Mac meal?', what should you ask next?",
+    "options": ["Anything else?", "Is that large or medium?", "What drink?", "For here or to go?"],
+    "answer": 1,
+    "explanation": "Always clarify the size before confirming the rest of the order."
+  },
+  {
+    "question": "A customer orders a Happy Meal. What should you confirm?",
+    "options": ["Toy type", "Drink size", "Price", "Sauce choice"],
+    "answer": 0,
+    "explanation": "Each Happy Meal includes a toy — confirming which one helps ensure the right set is given."
+  },
+  {
+    "question": "If a customer asks for 'a regular Coke,' what should you do?",
+    "options": ["Give a medium by default", "Ask what size", "Give a small", "Give a large"],
+    "answer": 0,
+    "explanation": "'Regular' at McDonald’s refers to a medium-sized drink."
+  },
+  {
+    "question": "What’s the best response if a customer says, 'I’m ready to order'?",
+    "options": ["Go ahead.", "Sure! What can I get started for you today?", "Okay.", "Yeah?"],
+    "answer": 1,
+    "explanation": "Use friendly and upbeat phrasing to maintain McDonald’s service standard."
+  },
+  {
+    "question": "A customer orders a McChicken meal but doesn’t specify the drink. You should:",
+    "options": ["Assume Coke", "Ask which drink they’d like", "Give water", "Cancel the order"],
+    "answer": 1,
+    "explanation": "Always confirm drink choice to avoid incorrect orders."
+  },
+  {
+    "question": "When taking a drive-thru order, what’s most important?",
+    "options": ["Speaking fast", "Clear tone and confirmation", "Chatting casually", "Avoiding repetition"],
+    "answer": 1,
+    "explanation": "Clear speech and confirmation reduce errors and improve speed."
+  },
+  {
+    "question": "A customer wants no onions on their burger. What should you do?",
+    "options": ["Tell the kitchen 'No onion'", "Remove it yourself", "Ignore it", "Say it’s not possible"],
+    "answer": 0,
+    "explanation": "Modify the order through the POS system to notify the kitchen accurately."
+  },
+  {
+    "question": "If a customer seems unsure what to order, you should:",
+    "options": ["Recommend a popular item", "Wait silently", "Tell them to hurry", "Skip to the next person"],
+    "answer": 0,
+    "explanation": "Suggestive selling helps guide them and improve guest experience."
+  },
+  {
+    "question": "When a customer says 'to go', what should you select?",
+    "options": ["Dine-in", "Takeaway", "Eat here", "Table service"],
+    "answer": 1,
+    "explanation": "'To go' means the customer wants takeaway packaging."
+  },
+  {
+    "question": "If the card reader fails, what’s the best response?",
+    "options": ["Ignore it", "Apologize and offer another payment method", "Cancel the order", "Restart the register"],
+    "answer": 1,
+    "explanation": "Apologize politely and guide the customer to try another method."
+  },
+  {
+    "question": "Which of these should you never do when taking an order?",
+    "options": ["Make eye contact", "Interrupt the customer", "Smile", "Confirm details"],
+    "answer": 1,
+    "explanation": "Let customers finish speaking before confirming or asking."
+  },
+  {
+    "question": "If a customer orders breakfast at 11:05 AM, what should you do?",
+    "options": ["Add it anyway", "Say breakfast is finished", "Ask the manager", "Offer a burger instead"],
+    "answer": 1,
+    "explanation": "Breakfast stops at 11:00 AM in most stores — politely explain and suggest lunch options."
+  },
+  {
+    "question": "If a customer asks for no salt fries, what should you do?",
+    "options": ["Make fresh fries without salt", "Give normal fries", "Wipe off salt", "Say no"],
+    "answer": 0,
+    "explanation": "Cook a new batch with no salt to meet the request safely."
+  },
+  {
+    "question": "Always confirm dine-in or takeaway for each order because:",
+    "options": ["It’s optional", "It affects packaging and order type", "The customer likes hearing it", "It changes prices"],
+    "answer": 1,
+    "explanation": "Prevents packaging errors and ensures correct preparation."
+  },
+  {
+    "question": "If unsure what a customer said:",
+    "options": ["Ask them to repeat politely", "Guess the item", "Skip the order", "Ask another customer"],
+    "answer": 0,
+    "explanation": "Always ask politely to confirm rather than guessing."
+  },
+  {
+    "question": "For drive-thru, greet within:",
+    "options": ["2 seconds", "5 seconds", "10 seconds", "Whenever free"],
+    "answer": 1,
+    "explanation": "Greet quickly to show attentiveness and efficiency."
+  },
+  {
+    "question": "Always thank the customer because:",
+    "options": ["It’s polite", "It ends the transaction", "It makes them leave", "It’s optional"],
+    "answer": 0,
+    "explanation": "Thanking customers builds a positive brand impression."
+  },
+  {
+    "question": "If the screen lags, you should:",
+    "options": ["Stay calm and wait", "Restart everything", "Ignore customer", "Stop taking orders"],
+    "answer": 0,
+    "explanation": "Maintain professionalism and calmly wait for it to recover."
+  },
+  {
+    "question": "Say 'please' and 'thank you' because:",
+    "options": ["It’s required by policy", "It improves guest satisfaction", "It’s optional", "It fills silence"],
+    "answer": 1,
+    "explanation": "Polite language is part of the McDonald’s service standard."
+  },
+  {
+    "question": "When a customer complains, first:",
+    "options": ["Apologize", "Argue", "Ignore", "Explain yourself"],
+    "answer": 0,
+    "explanation": "Acknowledging the issue first helps defuse tension."
+  },
+  {
+    "question": "Always clarify allergen requests because:",
+    "options": ["It’s optional", "Health and safety require it", "It’s faster", "It helps upsell"],
+    "answer": 1,
+    "explanation": "Ensuring safety with allergens is essential to customer care."
+  },
+  {
+    "question": "Smile while speaking because:",
+    "options": ["It’s visible through tone", "It’s required by law", "It’s optional", "It’s only for drive-thru"],
+    "answer": 0,
+    "explanation": "Customers can sense friendliness even over the speaker."
+  },
+  {
+    "question": "Never eat or drink at the counter because:",
+    "options": ["It’s unhygienic and unprofessional", "It’s tiring", "It’s loud", "It’s boring"],
+    "answer": 0,
+    "explanation": "Keeps the area clean and maintains professionalism."
+  },
+  {
+    "question": "End every interaction with:",
+    "options": ["Enjoy your meal!", "Goodbye.", "Next!", "Thanks."],
+    "answer": 0,
+    "explanation": "Leaves a lasting positive impression on customers."
+  },
+  {
+    "question": "Always confirm sauce requests because:",
+    "options": ["It prevents errors", "It doesn’t matter", "It’s optional", "It delays service"],
+    "answer": 0,
+    "explanation": "Correct sauce ensures the customer gets exactly what they ordered."
+  },
+  {
+    "question": "For allergies, you should:",
+    "options": ["Guess ingredients", "Check labels and confirm", "Ignore", "Ask someone else"],
+    "answer": 1,
+    "explanation": "Health and safety require careful verification of allergens."
+  },
+  {
+    "question": "When a customer says 'medium fries', you should:",
+    "options": ["Give small fries", "Give medium fries", "Give large fries", "Ask if they mean large"],
+    "answer": 1,
+    "explanation": "Always match the size requested by the customer."
+  },
+  {
+    "question": "When handing over an order, always:",
+    "options": ["Rush it", "Confirm the items and thank the customer", "Ignore details", "Ask them to check later"],
+    "answer": 1,
+    "explanation": "Verifying items reduces errors and improves satisfaction."
+  }
+]
