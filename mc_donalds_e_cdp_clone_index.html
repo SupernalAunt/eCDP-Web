@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>eCDP-style Training — Demo</title>
+  <style>
+    :root{--bg:#faf6eb;--accent:#ffcc00;--muted:#5b5b5b}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{background:linear-gradient(180deg,#fff 0%,#f6f1e6 100%);color:#222;display:flex;align-items:center;justify-content:center}
+    .app{width:100%;max-width:980px;margin:24px;border-radius:12px;box-shadow:0 8px 30px rgba(20,20,20,0.08);overflow:hidden}
+    header{display:flex;align-items:center;gap:16px;background:var(--accent);padding:16px}
+    header h1{margin:0;font-size:20px;color:#222}
+    .controls{margin-left:auto;display:flex;gap:8px}
+    .btn{background:#fff;border-radius:8px;padding:8px 12px;font-weight:600;cursor:pointer;border:0}
+    main{padding:20px;background:rgba(255,255,255,0.6)}
+    .menu{display:flex;gap:16px;flex-wrap:wrap}
+    .card{flex:1 1 220px;background:#fff;border-radius:10px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+    .hidden{display:none}
+    .center{text-align:center}
+    .question{margin:8px 0}
+    .choices{display:flex;gap:8px;flex-direction:column}
+    .choice{padding:10px;border-radius:8px;border:1px solid #eee;cursor:pointer}
+    .choice.correct{outline:3px solid rgba(0,160,0,0.12);border-color:rgba(0,160,0,0.2)}
+    .choice.wrong{outline:3px solid rgba(220,40,40,0.12);border-color:rgba(220,40,40,0.2)}
+    footer{padding:12px;text-align:center;font-size:13px;color:var(--muted)}
+    .small{font-size:13px;color:var(--muted)}
+    .audio-toggle{display:inline-flex;align-items:center;gap:8px}
+    .progress{height:12px;background:#eee;border-radius:8px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#ffcc00,#ff9f00);width:0%}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23ffcc00'/%3E%3C/svg%3E" alt="logo" style="width:44px;height:44px;border-radius:8px;"/>
+      <h1>eCDP-style Training — Demo</h1>
+      <div class="controls">
+        <div class="audio-toggle small">
+          <button id="audioToggle" class="btn" title="Toggle menu music">🔊 Menu Music</button>
+        </div>
+        <button id="reset" class="btn">Reset Progress</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Background menu audio (user should add assets/audio/BG_09.wav to the repo) -->
+      <audio id="bgAudio" loop preload="auto">
+        <source src="assets/audio/BG_09.wav" type="audio/wav" />
+        <!-- Browser fallback text -->
+      </audio>
+
+      <section id="screen-menu">
+        <div class="menu">
+          <div class="card center">
+            <h2>Welcome, Trainee</h2>
+            <p class="small">Choose a training module to begin. Progress saves automatically in your browser (localStorage).</p>
+            <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+              <button class="btn" id="startBtn">Start Module 1</button>
+              <button class="btn" id="resumeBtn">Resume</button>
+            </div>
+            <div style="margin-top:14px;text-align:left">
+              <strong>Quick Modules</strong>
+              <ul class="small">
+                <li>Customer Service (5 questions)</li>
+                <li>Food Safety (5 questions)</li>
+                <li>Cash Handling (4 questions)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Progress</h3>
+            <div style="margin:10px 0">
+              <div class="progress"><i id="progressBar"></i></div>
+              <p class="small" id="progressText">0% complete</p>
+            </div>
+            <h3>Score</h3>
+            <p id="scoreText" style="font-size:22px;font-weight:700">0 pts</p>
+          </div>
+
+          <div class="card">
+            <h3>Settings</h3>
+            <p class="small">Place your BG_09.wav audio file in <code>assets/audio/BG_09.wav</code>. If not found, the game will run silently.</p>
+            <p class="small">This is a static demo meant to run on GitHub Pages (push to your repo's main branch and enable Pages).</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-module" class="hidden">
+        <button id="backToMenu" class="btn">← Back</button>
+        <div style="display:flex;gap:16px;margin-top:12px;align-items:flex-start">
+          <div style="flex:2">
+            <h2 id="moduleTitle">Module 1 — Customer Service</h2>
+            <div id="questionWrap"></div>
+          </div>
+          <aside style="flex:1">
+            <div class="card">
+              <h4>Module Info</h4>
+              <p class="small" id="moduleInfo">Answer questions to earn points. Correct answers give +10, incorrect -2.</p>
+              <p class="small">Time per question: <strong id="timeLeft">--</strong></p>
+              <div style="margin-top:12px">
+                <button id="nextQ" class="btn">Next</button>
+              </div>
+            </div>
+            <div class="card" style="margin-top:12px;">
+              <h4>Current Score</h4>
+              <p id="moduleScore" style="font-size:20px;font-weight:700">0</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="screen-summary" class="hidden center">
+        <h2>Training Summary</h2>
+        <p id="summaryText">You scored 0 points</p>
+        <div style="margin-top:12px">
+          <button id="toMenuBtn" class="btn">Return to Menu</button>
+        </div>
+      </section>
+
+    </main>
+    <footer>
+      Built for demo purposes. Replace content & questions with your official training materials when deploying.
+    </footer>
+  </div>
+
+  <script>
+    // --- Demo training app logic ---
+    const bgAudio = document.getElementById('bgAudio');
+    const audioToggle = document.getElementById('audioToggle');
+    const startBtn = document.getElementById('startBtn');
+    const resumeBtn = document.getElementById('resumeBtn');
+    const screenMenu = document.getElementById('screen-menu');
+    const screenModule = document.getElementById('screen-module');
+    const screenSummary = document.getElementById('screen-summary');
+    const backToMenu = document.getElementById('backToMenu');
+    const questionWrap = document.getElementById('questionWrap');
+    const nextQ = document.getElementById('nextQ');
+    const moduleScoreEl = document.getElementById('moduleScore');
+    const scoreText = document.getElementById('scoreText');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const toMenuBtn = document.getElementById('toMenuBtn');
+    const resetBtn = document.getElementById('reset');
+
+    let state = {
+      module: 0,
+      qIndex: 0,
+      score: 0,
+      completed: 0
+    };
+
+    const modules = [
+      {
+        id: 'customer', title: 'Customer Service', questions: [
+          {q:'A guest asks for extra ketchup. Your best response?', a:['Refuse — it wastes supplies','Politely provide extra and log to system','Charge them extra'], correct:1},
+          {q:'A guest is upset about wait time. You should:', a:['Tell them to wait more patiently','Offer a sincere apology and an update','Ignore them'], correct:1},
+          {q:'The drive-thru headset is intermittent. You should:', a:['Shout to the window','Report issue and use backup method','Wait until it gets worse'], correct:1},
+          {q:'A customer asks about allergens. You should:', a:['Guess based on memory','Check the allergen guide and confirm','Tell them you don\'t know'], correct:1},
+          {q:'When giving change, you should:', a:['Count aloud to the guest','Hand it over without counting','Ask manager to do it'], correct:0}
+        ]
+      },
+      {
+        id:'safety', title:'Food Safety', questions:[
+          {q:'What is the safe holding temperature for hot foods?', a:['Below 63°C','Above 63°C','Exactly 50°C'], correct:1},
+          {q:'When handling ready-to-eat foods, you must:', a:['Use bare hands','Use gloves/tongs','Use the same utensils for raw and cooked'], correct:1},
+          {q:'If food is dropped on the floor, you should:', a:['Use the 5-second rule','Discard and replace','Brush it off and serve'], correct:1},
+          {q:'How often should you wash hands?', a:['After using restroom and before handling food','Only at start of shift','Never during shift'], correct:0},
+          {q:'If a product is past its expiry label, you should:', a:['Mark it as expired and discard','Use it if it smells fine','Give it away'], correct:0}
+        ]
+      },
+      {
+        id:'cash', title:'Cash Handling', questions:[
+          {q:'Best way to avoid till errors?', a:['Count change aloud and confirm','Give change quickly','Never give receipts'], correct:0},
+          {q:'When suspecting counterfeit bills you should:', a:['Accept and hope nobody notices','Follow store policy and report','Return them with apology'], correct:1},
+          {q:'End of shift cash count should be:', a:['Skipped','Accurate and double-checked','Estimated'], correct:1},
+          {q:'If a guest claims you gave wrong change:', a:['Argue with them','Politely recount and resolve','Ignore them'], correct:1}
+        ]
+      }
+    ];
+
+    // Simple persistence
+    function save() { localStorage.setItem('ecdp_state', JSON.stringify(state)); updateUI(); }
+    function load() { const s = localStorage.getItem('ecdp_state'); if(s) state = JSON.parse(s); updateUI(); }
+    function resetState(){ localStorage.removeItem('ecdp_state'); state = {module:0,qIndex:0,score:0,completed:0}; updateUI(); }
+
+    function updateUI(){
+      const totalQs = modules.reduce((acc,m)=>acc + m.questions.length,0);
+      const completed = state.completed || 0;
+      const pct = Math.round((completed/totalQs)*100);
+      progressBar.style.width = (pct||0) + '%';
+      progressText.textContent = (pct||0) + '% complete';
+      scoreText.textContent = (state.score||0) + ' pts';
+    }
+
+    // Audio controls
+    let audioPlaying = false;
+    audioToggle.addEventListener('click', ()=>{
+      // try to play, if not available show message
+      if(!audioPlaying){
+        bgAudio.play().then(()=>{audioPlaying=true; audioToggle.textContent='🔊 Menu Music (On)';}).catch(()=>{audioPlaying=false; alert('Unable to autoplay — interact with the page or add BG_09.wav at assets/audio/BG_09.wav');});
+      } else { bgAudio.pause(); audioPlaying=false; audioToggle.textContent='🔈 Menu Music (Off)'; }
+    });
+
+    // Start / resume
+    startBtn.addEventListener('click', ()=>{
+      startModule(0);
+    });
+    resumeBtn.addEventListener('click', ()=>{
+      // resume from last module
+      const nextModule = state.module || 0;
+      startModule(nextModule);
+    });
+
+    backToMenu.addEventListener('click', ()=>{ showScreen('menu'); });
+    toMenuBtn.addEventListener('click', ()=>{ showScreen('menu'); });
+    resetBtn.addEventListener('click', ()=>{ if(confirm('Reset all saved progress?')) resetState(); });
+
+    function showScreen(name){
+      screenMenu.classList.toggle('hidden', name!=='menu');
+      screenModule.classList.toggle('hidden', name!=='module');
+      screenSummary.classList.toggle('hidden', name!=='summary');
+      // manage audio: play when in menu
+      if(name==='menu' && audioPlaying===false){ /* don't auto-play unless toggled by user */ }
+    }
+
+    // Module flow
+    let currentModule = null;
+    let timer = null;
+    function startModule(index){
+      currentModule = modules[index];
+      state.module = index;
+      state.qIndex = state.qIndex || 0;
+      state.score = state.score || 0;
+      renderQuestion();
+      showScreen('module');
+      save();
+    }
+
+    function renderQuestion(){
+      const qIndex = state.qIndex || 0;
+      const q = currentModule.questions[qIndex];
+      document.getElementById('moduleTitle').textContent = currentModule.title;
+      document.getElementById('moduleInfo').textContent = `Question ${qIndex+1} of ${currentModule.questions.length}`;
+      questionWrap.innerHTML = '';
+
+      const qBox = document.createElement('div');
+      qBox.className = 'question card';
+      qBox.innerHTML = `<p style='font-weight:700'>${q.q}</p>`;
+
+      const choices = document.createElement('div');
+      choices.className = 'choices';
+      q.a.forEach((text, i)=>{
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.textContent = text;
+        btn.addEventListener('click', ()=>handleAnswer(i));
+        choices.appendChild(btn);
+      });
+
+      qBox.appendChild(choices);
+      questionWrap.appendChild(qBox);
+
+      moduleScoreEl.textContent = state.score || 0;
+    }
+
+    function handleAnswer(choiceIndex){
+      const qIndex = state.qIndex || 0;
+      const q = currentModule.questions[qIndex];
+      const correct = q.correct === choiceIndex;
+      const buttons = questionWrap.querySelectorAll('.choice');
+      buttons.forEach((b, i)=>{ b.disabled = true; if(i===q.correct) b.classList.add('correct'); if(i===choiceIndex && !correct) b.classList.add('wrong'); });
+
+      if(correct){ state.score = (state.score||0) + 10; } else { state.score = (state.score||0) - 2; }
+      state.completed = (state.completed || 0) + 1;
+      moduleScoreEl.textContent = state.score;
+      save();
+    }
+
+    nextQ.addEventListener('click', ()=>{
+      state.qIndex = (state.qIndex||0) + 1;
+      if(state.qIndex >= currentModule.questions.length){
+        // module finished
+        showSummary();
+      } else {
+        renderQuestion();
+      }
+      save();
+    });
+
+    function showSummary(){
+      document.getElementById('summaryText').textContent = `You scored ${state.score} points in ${currentModule.title}.`;
+      showScreen('summary');
+    }
+
+    // initial load
+    load();
+
+    // Friendly fallback: if audio file is missing, the element will fail; user can still press to play once added
+    bgAudio.addEventListener('error', ()=>{
+      audioToggle.textContent='🔈 Menu Music (Not found)';
+    });
+
+    // Accessibility: keyboard navigation for choices
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='Escape') showScreen('menu');
+    });
+
+    // End of script
+  </script>
+</body>
+</html>
