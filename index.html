@@ -7,25 +7,17 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Login Screen -->
-  <div id="loginScreen">
-    <h1>Welcome to <span style="color:#d00000;">eCDP Web</span></h1>
-    <button onclick="handleLogin()">Login</button>
-  </div>
+  <div class="container">
+    <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    <h1>Welcome to eCDP Web</h1>
+    <p>Please log in to begin your training</p>
 
-  <!-- Main Menu -->
-  <div id="mainMenu" style="display:none;">
-    <h2>Main Menu</h2>
-    <nav>
-      <button onclick="startModule('order-taking')">Order Taking</button>
-      <button onclick="startModule('kitchen-prep')">Kitchen Prep</button>
-      <button onclick="startModule('customer-service')">Customer Service</button>
-    </nav>
-    <audio id="loopMusic" src="assets/audio/BG_09.wav" loop></audio>
+    <div class="form-group">
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
   </div>
-
-  <!-- Intro Music -->
-  <audio id="introMusic" src="assets/audio/BG_04.wav"></audio>
 
   <script src="script.js"></script>
 </body>
