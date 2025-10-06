@@ -1,69 +1,88 @@
-<audio id="menuMusic" src="assets/audio/BG_04.wav" loop autoplay></audio>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Main Menu - eCDP Web</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    <h2>Main Menu</h2>
+    <p>Welcome, <span id="crewName"></span>!</p>
 
-<div style="margin-top: 1em;">
-  <label for="soundtrack"><span class="material-icons">music_note</span> Soundtrack:</label>
-  <select id="soundtrack" onchange="changeTrack(this.value)">
-    <option value="BG_04.wav">Shift Starts</option>
-    <option value="BG_03.wav">eCDP Exercise</option>
-    <option value="BG_09.wav">In The Menus</option>
-  </select>
+    <nav>
+      <button onclick="startModule('order-taking')">Order Taking</button>
+      <button onclick="startModule('kitchen-prep')">Kitchen Prep</button>
+      <button onclick="startModule('customer-service')">Customer Service</button>
+      <button onclick="loadLeaderboard()">Leaderboard</button>
+      <button onclick="logout()">Logout</button>
+    </nav>
 
-  <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
-  <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
-</div>
+    <label for="soundtrack">Soundtrack:</label>
+    <select id="soundtrack" onchange="changeTrack(this.value)">
+      <option value="BG_04.wav">Shift Starts</option>
+      <option value="BG_03.wav">eCDP Exercise</option>
+      <option value="BG_09.wav">In The Menus</option>
+    </select>
 
-<footer>
-  <img src="assets/images/mclogo.png" alt="McDonald's Logo" />
-  <span>eCDP Web Training Platform</span>
-</footer>
+    <label for="volume">Volume:</label>
+    <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+  </div>
 
-<script type="module">
-  import { auth } from './firebase.js';
-  import {
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
+  <footer>
+    <img src="assets/images/mclogo.png" alt="McDonald's Logo" />
+    <span>eCDP Web Training Platform</span>
+  </footer>
 
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      document.getElementById('crewName').textContent = user.email;
-    } else {
-      window.location.href = "index.html";
-    }
-  });
+  <audio id="menuMusic" src="assets/audio/BG_04.wav" loop autoplay></audio>
 
-  const startModule = (moduleName) => {
-    window.location.href = `modules/${moduleName}.html`;
-  };
+  <script type="module">
+    import { auth } from './firebase.js';
+    import {
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 
-  const loadLeaderboard = () => {
-    alert("Leaderboard coming soon!");
-  };
-
-  const logout = () => {
-    const music = document.getElementById('menuMusic');
-    if (music) music.pause();
-    signOut(auth).then(() => {
-      window.location.href = "index.html";
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById('crewName').textContent = user.email;
+      } else {
+        window.location.href = "index.html";
+      }
     });
-  };
 
-  const changeTrack = (filename) => {
-    const music = document.getElementById('menuMusic');
-    if (music) {
+    const startModule = (moduleName) => {
+      window.location.href = `modules/${moduleName}.html`;
+    };
+
+    const loadLeaderboard = () => {
+      alert("Leaderboard coming soon!");
+    };
+
+    const logout = () => {
+      document.getElementById('menuMusic').pause();
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    };
+
+    const changeTrack = (filename) => {
+      const music = document.getElementById('menuMusic');
       music.src = `assets/audio/${filename}`;
       music.play();
-    }
-  };
+    };
 
-  const adjustVolume = (value) => {
-    const music = document.getElementById('menuMusic');
-    if (music) music.volume = parseFloat(value);
-  };
+    const adjustVolume = (value) => {
+      document.getElementById('menuMusic').volume = parseFloat(value);
+    };
 
-  window.startModule = startModule;
-  window.loadLeaderboard = loadLeaderboard;
-  window.logout = logout;
-  window.changeTrack = changeTrack;
-  window.adjustVolume = adjustVolume;
-</script>
+    window.startModule = startModule;
+    window.loadLeaderboard = loadLeaderboard;
+    window.logout = logout;
+    window.changeTrack = changeTrack;
+    window.adjustVolume = adjustVolume;
+  </script>
+</body>
+</html>
