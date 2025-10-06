@@ -3,81 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Order Taking - Cheeseburger Builder</title>
+  <title>Order Taking Quiz - eCDP Web</title>
   <link rel="stylesheet" href="../style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    .ingredient {
-      padding: 8px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: grab;
-      color: white;
-      font-weight: bold;
-      text-align: center;
-    }
-    .slot {
-      width: 120px;
-      height: 30px;
-      margin: 5px auto;
-      border: 2px dashed #ccc;
-      text-align: center;
-      line-height: 30px;
-      font-weight: bold;
-      background-color: #f4f4f4;
-    }
-    .happy {
-      color: green;
-      font-size: 1.2em;
-    }
-    .sad {
-      color: red;
-      font-size: 1.2em;
-    }
-    .material-icons.large {
-      font-size: 48px;
-      color: red;
-      vertical-align: middle;
-    }
-    #hintArea {
-      margin-top: 1em;
-      padding: 10px;
-      background: #fff8f0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .controls {
-      margin-top: 1em;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5em;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
     <img src="../assets/images/logo.png" alt="eCDP Logo" class="logo" />
-    <h2>Order Taking Module</h2>
-    <p>Customer Order: <strong><span id="orderName"></span></strong></p>
-    <div>Time Left: <span id="time">180</span>s</div>
-    <div>Score: <span id="points">0</span></div>
+    <h2>Order Taking Quiz</h2>
+    <p>Answer 10 random questions to sharpen your skills.</p>
 
-    <h3>Build the Burger</h3>
-    <div id="ingredientTray"></div>
-    <div id="burgerStack"></div>
+    <div id="quizArea"></div>
 
     <div class="controls">
-      <button onclick="submitBurger()">Submit Order</button>
-      <button onclick="resetStack()">Reset Stack</button>
-      <button onclick="showHint()">Hint</button>
+      <button onclick="submitQuiz()">Submit Answers</button>
+      <button onclick="retryQuiz()">Retry Incorrect</button>
+      <button onclick="goToMenu()">Back to Main Menu</button>
 
       <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
       <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
     </div>
 
     <div id="feedback"></div>
-    <div id="hintArea" style="display:none;"></div>
   </div>
 
   <footer>
@@ -88,119 +35,223 @@
   <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
 
   <script>
-    const ingredients = {
-      "bun-top": "#d4a373",
-      "ketchup": "#ff0000",
-      "mustard": "#ffcc00",
-      "pickles": "#66bb66",
-      "onions": "#cccccc",
-      "cheese": "#ffcc66",
-      "patty": "#663300",
-      "bun-bottom": "#d4a373"
-    };
+    const allQuestions = [
+      { question: "What’s the first thing you should do when a customer approaches the counter?",
+        options: ["Ask what they want", "Greet them politely with a smile", "Wait silently", "Look at the register"],
+        answer: 1, explanation: "A warm greeting creates a positive first impression and sets the tone for good service." },
 
-    const scenarios = [
-      { name: "Standard Cheeseburger", order: ["bun-top", "ketchup", "mustard", "pickles", "onions", "cheese", "patty", "bun-bottom"] },
-      { name: "Plain Cheeseburger", order: ["bun-top", "cheese", "patty", "bun-bottom"] },
-      { name: "No Pickles", order: ["bun-top", "ketchup", "mustard", "onions", "cheese", "patty", "bun-bottom"] },
-      { name: "Extra Cheese", order: ["bun-top", "ketchup", "mustard", "pickles", "onions", "cheese", "cheese", "patty", "bun-bottom"] },
-      { name: "Double Patty", order: ["bun-top", "ketchup", "mustard", "pickles", "onions", "cheese", "patty", "patty", "bun-bottom"] }
+      { question: "When a customer says “Can I get a Big Mac meal?”, what should you ask next?",
+        options: ["Anything else?", "Is that large or medium?", "What drink?", "For here or to go?"],
+        answer: 1, explanation: "Always clarify the size before confirming the rest of the order." },
+
+      { question: "A customer orders a Happy Meal. What should you confirm?",
+        options: ["Toy type", "Drink size", "Price", "Sauce choice"],
+        answer: 0, explanation: "Each Happy Meal includes a toy — confirming which one helps ensure the right set is given." },
+
+      { question: "If a customer asks for “a regular Coke,” what should you do?",
+        options: ["Give a medium by default", "Ask what size", "Give a small", "Give a large"],
+        answer: 0, explanation: "“Regular” at McDonald’s refers to a medium-sized drink." },
+
+      { question: "What’s the best response if a customer says, “I’m ready to order”?",
+        options: ["Go ahead.", "Sure! What can I get started for you today?", "Okay.", "Yeah?"],
+        answer: 1, explanation: "Use friendly and upbeat phrasing to maintain McDonald’s service standard." },
+
+      { question: "A customer orders a McChicken meal but doesn’t specify the drink. You should:",
+        options: ["Assume Coke", "Ask which drink they’d like", "Give water", "Cancel the order"],
+        answer: 1, explanation: "Always confirm drink choice to avoid incorrect orders." },
+
+      { question: "When taking a drive-thru order, what’s most important?",
+        options: ["Speaking fast", "Clear tone and confirmation", "Chatting casually", "Avoiding repetition"],
+        answer: 1, explanation: "Clear speech and confirmation reduce errors and improve speed." },
+
+      { question: "A customer wants no onions on their burger. What should you do?",
+        options: ["Tell the kitchen 'No onion'", "Remove it yourself", "Ignore it", "Say it’s not possible"],
+        answer: 0, explanation: "Modify the order through the POS system to notify the kitchen accurately." },
+
+      { question: "If a customer seems unsure what to order, you should:",
+        options: ["Recommend a popular item", "Wait silently", "Tell them to hurry", "Skip to the next person"],
+        answer: 0, explanation: "Suggestive selling helps guide them and improve guest experience." },
+
+      { question: "When a customer says 'to go', what should you select?",
+        options: ["Dine-in", "Takeaway", "Eat here", "Table service"],
+        answer: 1, explanation: "‘To go’ means the customer wants takeaway packaging." },
+
+      { question: "If the card reader fails, what’s the best response?",
+        options: ["Ignore it", "Apologize and offer another payment method", "Cancel the order", "Restart the register"],
+        answer: 1, explanation: "Apologize politely and guide the customer to try another method." },
+
+      { question: "Which of these should you never do when taking an order?",
+        options: ["Make eye contact", "Interrupt the customer", "Smile", "Confirm details"],
+        answer: 1, explanation: "Let customers finish speaking before confirming or asking." },
+
+      { question: "If a customer orders breakfast at 11:05 AM, what should you do?",
+        options: ["Add it anyway", "Say breakfast is finished", "Ask the manager", "Offer a burger instead"],
+        answer: 1, explanation: "Breakfast stops at 11:00 AM in most stores — politely explain and suggest lunch options." },
+
+      { question: "If a customer asks for no salt fries, what should you do?",
+        options: ["Make fresh fries without salt", "Give normal fries", "Wipe off salt", "Say no"],
+        answer: 0, explanation: "Cook a new batch with no salt to meet the request safely." },
+
+      { question: "Always confirm dine-in or takeaway for each order because:",
+        options: ["It’s optional", "It affects packaging and order type", "The customer likes hearing it", "It changes prices"],
+        answer: 1, explanation: "Prevents packaging errors and ensures correct preparation." },
+
+      { question: "If unsure what a customer said:",
+        options: ["Ask them to repeat politely", "Guess the item", "Skip the order", "Ask another customer"],
+        answer: 0, explanation: "Always ask politely to confirm rather than guessing." },
+
+      { question: "For drive-thru, greet within:",
+        options: ["2 seconds", "5 seconds", "10 seconds", "Whenever free"],
+        answer: 1, explanation: "Greet quickly to show attentiveness and efficiency." },
+
+      { question: "Always thank the customer because:",
+        options: ["It’s polite", "It ends the transaction", "It makes them leave", "It’s optional"],
+        answer: 0, explanation: "Thanking customers builds a positive brand impression." },
+
+      { question: "If the screen lags, you should:",
+        options: ["Stay calm and wait", "Restart everything", "Ignore customer", "Stop taking orders"],
+        answer: 0, explanation: "Maintain professionalism and calmly wait for it to recover." },
+
+      { question: "Say 'please' and 'thank you' because:",
+        options: ["It’s required by policy", "It improves guest satisfaction", "It’s optional", "It fills silence"],
+        answer: 1, explanation: "Polite language is part of the McDonald’s service standard." },
+
+      { question: "When a customer complains, first:",
+        options: ["Apologize", "Argue", "Ignore", "Explain yourself"],
+        answer: 0, explanation: "Acknowledging the issue first helps defuse tension." },
+
+      { question: "Always clarify allergen requests because:",
+        options: ["It’s optional", "Health and safety require it", "It’s faster", "It helps upsell"],
+        answer: 1, explanation: "Ensuring safety with allergens is essential to customer care." },
+
+      { question: "Smile while speaking because:",
+        options: ["It’s visible through tone", "It’s required by law", "It’s optional", "It’s only for drive-thru"],
+        answer: 0, explanation: "Customers can sense friendliness even over the speaker." },
+
+      { question: "Never eat or drink at the counter because:",
+        options: ["It’s unhygienic and unprofessional", "It’s tiring", "It’s loud", "It’s boring"],
+        answer: 0, explanation: "Keeps the area clean and maintains professionalism." },
+
+      { question: "End every interaction with:",
+        options: ["Enjoy your meal!", "Goodbye.", "Next!", "Thanks."],
+        answer: 0, explanation: "Leaves a lasting positive impression on customers." }
     ];
 
-    const selected = scenarios[Math.floor(Math.random() * scenarios.length)];
-    document.getElementById("orderName").textContent = selected.name;
+    let currentSession = [];
+    let incorrectIndexes = [];
 
-    const tray = document.getElementById("ingredientTray");
-    const stack = document.getElementById("burgerStack");
-
-    Object.entries(ingredients).forEach(([name, color]) => {
-      const item = document.createElement("div");
-      item.className = "ingredient";
-      item.draggable = true;
-      item.textContent = name;
-      item.style.backgroundColor = color;
-      item.dataset.name = name;
-      item.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", name);
-      });
-      tray.appendChild(item);
-    });
-
-    function buildStack() {
-      stack.innerHTML = "";
-      for (let i = 0; i < selected.order.length; i++) {
-        const slot = document.createElement("div");
-        slot.className = "slot";
-        slot.addEventListener("dragover", e => e.preventDefault());
-        slot.addEventListener("drop", e => {
-          const name = e.dataTransfer.getData("text/plain");
-          slot.textContent = name;
-          slot.style.backgroundColor = ingredients[name] || "#999";
-          slot.dataset.name = name;
-        });
-        stack.appendChild(slot);
-      }
+    function shuffleArray(array) {
+      return array.sort(() => Math.random() - 0.5);
     }
 
-    buildStack();
-
-    let timeLeft = 180;
-    const timer = setInterval(() => {
-      timeLeft--;
-      document.getElementById("time").textContent = timeLeft;
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        submitBurger();
-      }
-    }, 1000);
-
-    function submitBurger() {
-      clearInterval(timer);
-      const slots = Array.from(document.querySelectorAll(".slot")).map(s => s.dataset.name || "");
-      const correct = selected.order;
-      let score = 0;
-
-      for (let i = 0; i < correct.length; i++) {
-        if (slots[i] === correct[i]) score += 10;
-      }
-
-      document.getElementById("points").textContent = score;
-
-      let feedback = "";
-      if (score === correct.length * 10) {
-        feedback = "<p class='happy'>😊 Perfect! Customer is happy!</p>";
-      } else if (score >= correct.length * 7) {
-        feedback = "<p class='happy'>🙂 Good job! Minor mistakes.</p>";
-      } else {
-        feedback = "<p class='sad'><span class='material-icons large'>close</span> Incorrect build. Customer is upset.</p>";
-      }
-
-      document.getElementById("feedback").innerHTML = feedback;
-    }
-
-    function showHint() {
-      const hintArea = document.getElementById("hintArea");
-      hintArea.style.display = "block";
-      hintArea.innerHTML = `
-        <h4>Training Tip: How to Build a "${selected.name}"</h4>
-        <p>Stack the ingredients in this exact order from top to bottom:</p>
-        <ul>
-          ${selected.order.map(item => `<li><strong>${item}</strong></li>`).join("")}
-        </ul>
-        <p>Each layer matters! Pay attention to the sequence and ingredient types.</p>
-      `;
-    }
-
-    function resetStack() {
-      buildStack();
+    function loadSession() {
       document.getElementById("feedback").innerHTML = "";
-      document.getElementById("hintArea").style.display = "none";
+      incorrectIndexes = [];
+
+      // Randomly select 10 questions from the pool
+      currentSession = shuffleArray([...allQuestions]).slice(0, 10);
+
+      const quizArea = document.getElementById("quizArea");
+      quizArea.innerHTML = "";
+
+      currentSession.forEach((q, i) => {
+        const block = document.createElement("div");
+        block.style.marginBottom = "1em";
+
+        const label = document.createElement("p");
+        label.textContent = `${i + 1}. ${q.question}`;
+        block.appendChild(label);
+
+        q.options.forEach((opt, j) => {
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q${i}`;
+          radio.value = j;
+          radio.id = `q${i}opt${j}`;
+
+          const optLabel = document.createElement("label");
+          optLabel.htmlFor = radio.id;
+          optLabel.textContent = opt;
+
+          block.appendChild(radio);
+          block.appendChild(optLabel);
+          block.appendChild(document.createElement("br"));
+        });
+
+        quizArea.appendChild(block);
+      });
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      incorrectIndexes = [];
+
+      currentSession.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && parseInt(selected.value) === q.answer) {
+          score += 1;
+        } else {
+          incorrectIndexes.push(i);
+        }
+      });
+
+      const feedback = document.getElementById("feedback");
+      feedback.innerHTML = `<p>You scored ${score} out of ${currentSession.length}.</p>`;
+
+      if (score === currentSession.length) {
+        feedback.innerHTML += `<p class='happy'><span class="material-icons">check_circle</span> Perfect! Great job!</p>`;
+      } else if (score >= 7) {
+        feedback.innerHTML += `<p class='happy'><span class="material-icons">thumb_up</span> Good effort! Review the missed ones.</p>`;
+      } else {
+        feedback.innerHTML += `<p class='sad'><span class="material-icons">close</span> Needs improvement. Try again.</p>`;
+      }
+    }
+
+    function retryQuiz() {
+      if (incorrectIndexes.length === 0) return;
+      const quizArea = document.getElementById("quizArea");
+      quizArea.innerHTML = "";
+
+      incorrectIndexes.forEach(i => {
+        const q = currentSession[i];
+        const block = document.createElement("div");
+        block.style.marginBottom = "1em";
+
+        const label = document.createElement("p");
+        label.textContent = `Retry: ${q.question}`;
+        block.appendChild(label);
+
+        q.options.forEach((opt, j) => {
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q${i}`;
+          radio.value = j;
+          radio.id = `q${i}opt${j}`;
+
+          const optLabel = document.createElement("label");
+          optLabel.htmlFor = radio.id;
+          optLabel.textContent = opt;
+
+          block.appendChild(radio);
+          block.appendChild(optLabel);
+          block.appendChild(document.createElement("br"));
+        });
+
+        quizArea.appendChild(block);
+      });
+
+      document.getElementById("feedback").innerHTML = "";
+    }
+
+    function goToMenu() {
+      window.location.href = "../mainMenu.html";
     }
 
     function adjustVolume(value) {
-      const music = document.getElementById("bgMusic");
-      if (music) music.volume = parseFloat(value);
+      document.getElementById("bgMusic").volume = parseFloat(value);
     }
+
+    loadSession();
   </script>
 </body>
 </html>
