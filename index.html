@@ -3,30 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>eCDP Web</title>
+  <title>eCDP Web Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
     <h1>Welcome to eCDP Web</h1>
-    <p>Please log in to begin your training</p>
+    <p>Please log in or register to begin your training</p>
 
     <div class="form-group">
-      <input type="text" id="username" placeholder="Crew ID or Name" />
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
       <button onclick="login()">Login</button>
+      <button onclick="register()">Register</button>
     </div>
   </div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7TnwfR38dq-CyJA0qQYUREH4LzOUmkRI",
+      authDomain: "g-site-at.firebaseapp.com",
+      projectId: "g-site-at",
+      appId: "1:324999905109:web:0304c102210e199edab9dc"
+    };
+    firebase.initializeApp(firebaseConfig);
+
     function login() {
-      const username = document.getElementById('username').value.trim();
-      if (username) {
-        sessionStorage.setItem('ecdpUser', username);
-        window.location.href = "mainMenu.html";
-      } else {
-        alert("Please enter your Crew ID or Name.");
-      }
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(user => {
+          sessionStorage.setItem('ecdpUser', user.user.email);
+          window.location.href = "mainMenu.html";
+        })
+        .catch(error => {
+          alert("Login failed: " + error.message);
+        });
+    }
+
+    function register() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(user => {
+          alert("Registration successful! You can now log in.");
+        })
+        .catch(error => {
+          alert("Registration failed: " + error.message);
+        });
     }
   </script>
 </body>
