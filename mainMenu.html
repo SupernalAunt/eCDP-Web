@@ -17,13 +17,29 @@
       <button onclick="startModule('kitchen-prep')">🍳 Kitchen Prep</button>
       <button onclick="startModule('customer-service')">💬 Customer Service</button>
       <button onclick="loadLeaderboard()">🏆 Leaderboard</button>
+      <button onclick="logout()">🚪 Logout</button>
     </nav>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+
   <script>
-    // Load crew name from session
-    const name = sessionStorage.getItem('ecdpUser');
-    document.getElementById('crewName').textContent = name || "Crew Member";
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7TnwfR38dq-CyJA0qQYUREH4LzOUmkRI",
+      authDomain: "g-site-at.firebaseapp.com",
+      projectId: "g-site-at",
+      appId: "1:324999905109:web:0304c102210e199edab9dc"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('crewName').textContent = user.email;
+      } else {
+        window.location.href = "index.html";
+      }
+    });
 
     function startModule(moduleName) {
       window.location.href = `modules/${moduleName}.html`;
@@ -31,6 +47,12 @@
 
     function loadLeaderboard() {
       alert("Leaderboard coming soon!");
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      });
     }
   </script>
 </body>
