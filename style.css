@@ -7,8 +7,8 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #003366, #001f3f); /* Deep blue gradient */
-  color: white;
+  background: linear-gradient(to bottom, #002b5c, #001a3a); /* Deep blue gradient */
+  color: #ffffff;
   text-align: center;
   height: 100vh;
   overflow: hidden;
@@ -28,12 +28,21 @@ body {
   font-size: 3em;
   color: #ff69b4; /* Pink title text */
   margin-bottom: 2em;
-  text-shadow: 2px 2px #000;
+  text-shadow: 2px 2px #000000;
+}
+
+#loginScreen input {
+  padding: 0.8em;
+  width: 250px;
+  margin: 0.5em 0;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
 }
 
 #loginScreen button {
   background-color: #ffffff;
-  color: #003366;
+  color: #002b5c;
   border: none;
   padding: 1em 2em;
   font-size: 1.2em;
@@ -61,7 +70,7 @@ body {
   font-size: 2.5em;
   margin-bottom: 1em;
   color: #ffffff;
-  text-shadow: 1px 1px #000;
+  text-shadow: 1px 1px #000000;
 }
 
 nav {
@@ -72,7 +81,7 @@ nav {
 
 nav button {
   background-color: #ffffff;
-  color: #003366;
+  color: #002b5c;
   border: none;
   padding: 1em 2em;
   font-size: 1.2em;
