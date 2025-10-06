@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kitchen Prep - eCDP Web</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <img src="../assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    <h2>Kitchen Prep Module</h2>
+    <p>Prepare the ingredients correctly before the timer runs out!</p>
+
+    <div>Time Left: <span id="time">180</span>s</div>
+    <div>Score: <span id="points">0</span></div>
+
+    <div id="prepArea"></div>
+
+    <div class="controls">
+      <button onclick="submitPrep()">Submit Prep</button>
+      <button onclick="resetPrep()">Reset</button>
+      <button onclick="showHint()">Hint</button>
+
+      <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    </div>
+
+    <div id="feedback"></div>
+    <div id="hintArea" style="display:none;"></div>
+  </div>
+
+  <footer>
+    <img src="../assets/images/mclogo.png" alt="McDonald's Logo" />
+    <span>eCDP Web Training Platform</span>
+  </footer>
+
+  <audio id="bgMusic" src="../assets/audio/BG_09.wav" loop autoplay></audio>
+
+  <script>
+    const tasks = [
+      { name: "Slice Tomatoes", correct: "sliced" },
+      { name: "Grill Patty", correct: "grilled" },
+      { name: "Wrap Cheese", correct: "wrapped" },
+      { name: "Toast Bun", correct: "toasted" }
+    ];
+
+    let timeLeft = 180;
+    let score = 0;
+
+    const prepArea = document.getElementById("prepArea");
+
+    function buildPrepArea() {
+      prepArea.innerHTML = "";
+      tasks.forEach(task => {
+        const container = document.createElement("div");
+        container.style.marginBottom = "1em";
+
+        const label = document.createElement("label");
+        label.textContent = task.name;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Enter action (e.g. sliced)";
+        input.dataset.correct = task.correct;
+
+        container.appendChild(label);
+        container.appendChild(input);
+        prepArea.appendChild(container);
+      });
+    }
+
+    buildPrepArea();
+
+    const timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById("time").textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        submitPrep();
+      }
+    }, 1000);
+
+    function submitPrep() {
+      clearInterval(timer);
+      score = 0;
+      const inputs = prepArea.querySelectorAll("input");
+      inputs.forEach(input => {
+        if (input.value.trim().toLowerCase() === input.dataset.correct) {
+          score += 10;
+        }
+      });
+
+      document.getElementById("points").textContent = score;
+
+      let feedback = "";
+      if (score === tasks.length * 10) {
+        feedback = "<p class='happy'>✅ All prep steps correct! Kitchen is ready!</p>";
+      } else if (score >= tasks.length * 7) {
+        feedback = "<p class='happy'>👍 Good job! Minor mistakes.</p>";
+      } else {
+        feedback = "<p class='sad'><span class='material-icons large'>close</span> Prep incomplete. Try again.</p>";
+      }
+
+      document.getElementById("feedback").innerHTML = feedback;
+    }
+
+    function resetPrep() {
+      buildPrepArea();
+      document.getElementById("feedback").innerHTML = "";
+      document.getElementById("hintArea").style.display = "none";
+    }
+
+    function showHint() {
+      const hintArea = document.getElementById("hintArea");
+      hintArea.style.display = "block";
+      hintArea.innerHTML = `
+        <h4>Training Tip: Kitchen Prep Actions</h4>
+        <ul>
+          ${tasks.map(t => `<li><strong>${t.name}</strong> → <em>${t.correct}</em></li>`).join("")}
+        </ul>
+        <p>Use the correct culinary terms for each step.</p>
+      `;
+    }
+
+    function adjustVolume(value) {
+      document.getElementById("bgMusic").volume = parseFloat(value);
+    }
+  </script>
+</body>
+</html>
