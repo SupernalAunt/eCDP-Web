@@ -1,4 +1,4 @@
-/* General Reset */
+/* Reset and Base */
 * {
   margin: 0;
   padding: 0;
@@ -7,64 +7,82 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #ffe600; /* McDonald's yellow */
-  color: #222;
+  background: linear-gradient(to bottom, #003366, #001f3f); /* Deep blue gradient */
+  color: white;
   text-align: center;
+  height: 100vh;
   overflow: hidden;
 }
 
-/* Intro Section */
-#intro {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: black;
+/* Login Screen */
+#loginScreen {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-#intro video {
-  width: 100%;
   height: 100%;
-  object-fit: cover;
+  padding: 2em;
 }
 
-/* Title Screen */
-#titleScreen {
-  padding: 3em 1em;
+#loginScreen h1 {
+  font-size: 3em;
+  color: #ff69b4; /* Pink title text */
+  margin-bottom: 2em;
+  text-shadow: 2px 2px #000;
+}
+
+#loginScreen button {
+  background-color: #ffffff;
+  color: #003366;
+  border: none;
+  padding: 1em 2em;
+  font-size: 1.2em;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1em;
+  transition: background-color 0.3s ease;
+}
+
+#loginScreen button:hover {
+  background-color: #cce6ff;
+}
+
+/* Main Menu */
+#mainMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   animation: fadeIn 1s ease-in;
 }
 
-h1 {
+#mainMenu h2 {
   font-size: 2.5em;
   margin-bottom: 1em;
-  color: #d00000; /* McDonald's red */
+  color: #ffffff;
+  text-shadow: 1px 1px #000;
 }
 
-/* Navigation Buttons */
 nav {
   display: flex;
   flex-direction: column;
   gap: 1em;
-  align-items: center;
 }
 
 nav button {
-  background-color: #d00000;
-  color: white;
+  background-color: #ffffff;
+  color: #003366;
   border: none;
   padding: 1em 2em;
   font-size: 1.2em;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 nav button:hover {
-  background-color: #ff4c4c;
+  background-color: #cce6ff;
 }
 
 /* Fade-in Animation */
