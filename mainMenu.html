@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Main Menu - eCDP Web</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -13,13 +14,24 @@
     <p>Welcome, <span id="crewName"></span>!</p>
 
     <nav>
-      <button onclick="startModule('order-taking')">🍔 Order Taking</button>
-      <button onclick="startModule('kitchen-prep')">🍳 Kitchen Prep</button>
-      <button onclick="startModule('customer-service')">💬 Customer Service</button>
-      <button onclick="loadLeaderboard()">🏆 Leaderboard</button>
-      <button onclick="logout()">🚪 Logout</button>
+      <button onclick="startModule('order-taking')"><span class="material-icons">fastfood</span> Order Taking</button>
+      <button onclick="startModule('kitchen-prep')"><span class="material-icons">restaurant</span> Kitchen Prep</button>
+      <button onclick="startModule('customer-service')"><span class="material-icons">chat</span> Customer Service</button>
+      <button onclick="loadLeaderboard()"><span class="material-icons">leaderboard</span> Leaderboard</button>
+      <button onclick="logout()"><span class="material-icons">logout</span> Logout</button>
     </nav>
+
+    <div style="margin-top: 1em;">
+      <label for="soundtrack"><span class="material-icons">music_note</span> Soundtrack:</label>
+      <select id="soundtrack" onchange="changeTrack(this.value)">
+        <option value="BG_09.wav">In The Menus</option>
+        <option value="BG_04.wav">Shift Starts</option>
+        <option value="BG_03.wav">eCDP Exercise</option>
+      </select>
+    </div>
   </div>
+
+  <audio id="menuMusic" src="assets/audio/BG_09.wav" loop autoplay></audio>
 
   <script type="module">
     import { auth } from './firebase.js';
@@ -45,14 +57,25 @@
     };
 
     const logout = () => {
+      const music = document.getElementById('menuMusic');
+      if (music) music.pause();
       signOut(auth).then(() => {
         window.location.href = "index.html";
       });
     };
 
+    const changeTrack = (filename) => {
+      const music = document.getElementById('menuMusic');
+      if (music) {
+        music.src = `assets/audio/${filename}`;
+        music.play();
+      }
+    };
+
     window.startModule = startModule;
     window.loadLeaderboard = loadLeaderboard;
     window.logout = logout;
+    window.changeTrack = changeTrack;
   </script>
 </body>
 </html>
