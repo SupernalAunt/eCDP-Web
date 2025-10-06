@@ -13,12 +13,21 @@
     <p>Please log in to begin your training</p>
 
     <div class="form-group">
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
+      <input type="text" id="username" placeholder="Crew ID or Name" />
       <button onclick="login()">Login</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      if (username) {
+        sessionStorage.setItem('ecdpUser', username);
+        window.location.href = "mainMenu.html";
+      } else {
+        alert("Please enter your Crew ID or Name.");
+      }
+    }
+  </script>
 </body>
 </html>
