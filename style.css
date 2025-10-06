@@ -1,10 +1,13 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap');
+
 /* Base layout */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #eaf0f9;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f9f9f9;
   margin: 0;
   padding: 0;
-  color: #1c1c1c;
+  color: #333333;
 }
 
 /* Container styling */
@@ -14,26 +17,28 @@ body {
   padding: 2em;
   background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 /* Logo styling */
 .logo {
   display: block;
   margin: 0 auto 1.5em;
-  max-width: 120px;
+  max-width: 140px;
 }
 
 /* Headings */
 h1, h2, h3 {
   text-align: center;
-  color: #2a5d9f;
+  font-family: 'Roboto', sans-serif;
+  color: #d62c1a; /* McDonald’s red */
   margin-bottom: 0.5em;
 }
 
 p {
   text-align: center;
   margin-bottom: 1.5em;
+  font-size: 1em;
 }
 
 /* Form inputs */
@@ -45,29 +50,39 @@ select {
   width: 100%;
   max-width: 400px;
   margin: 0.5em auto;
-  padding: 0.6em;
+  padding: 0.8em;
   font-size: 1em;
-  border: 1px solid #cbd6e2;
-  border-radius: 6px;
-  background-color: #f7f9fc;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f4f4f4;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #d62c1a;
+  box-shadow: 0 0 5px rgba(214,44,26,0.3);
 }
 
 /* Buttons */
 button {
   display: inline-block;
-  background-color: #2a5d9f;
+  background-color: #d62c1a;
   color: white;
   border: none;
-  padding: 0.8em 1.4em;
+  padding: 0.9em 1.6em;
   margin: 0.5em;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
   font-size: 1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  background-color: #1f4a80;
+  background-color: #b52717;
+  transform: translateY(-1px);
 }
 
 /* Navigation */
@@ -79,7 +94,7 @@ nav {
   margin-top: 2em;
 }
 
-/* Ingredient tray and burger stack */
+/* Quiz / Ingredient tray and burger stack */
 #ingredientTray, #burgerStack {
   display: flex;
   flex-direction: column;
@@ -88,43 +103,57 @@ nav {
 }
 
 .ingredient {
-  padding: 8px;
-  margin: 5px;
-  border-radius: 5px;
+  padding: 10px;
+  margin: 6px;
+  border-radius: 6px;
   cursor: grab;
   color: white;
   font-weight: bold;
   text-align: center;
   width: 140px;
+  background-color: #d62c1a;
+  transition: transform 0.2s ease;
+}
+
+.ingredient:active {
+  transform: scale(1.05);
 }
 
 .slot {
   width: 140px;
-  height: 30px;
+  height: 32px;
   margin: 5px;
-  border: 2px dashed #cbd6e2;
+  border: 2px dashed #ccc;
   text-align: center;
-  line-height: 30px;
+  line-height: 32px;
   font-weight: bold;
-  background-color: #f4f7fb;
+  background-color: #f4f4f4;
+  border-radius: 6px;
 }
 
 /* Feedback messages */
 .happy {
-  color: green;
-  font-size: 1.2em;
+  color: #ffc72c; /* Gold */
+  font-size: 1.25em;
   text-align: center;
+  animation: fadeIn 0.5s ease-in;
 }
 
 .sad {
-  color: red;
-  font-size: 1.2em;
+  color: #d62c1a;
+  font-size: 1.25em;
   text-align: center;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px);}
+  to { opacity: 1; transform: translateY(0);}
 }
 
 .material-icons.large {
   font-size: 48px;
-  color: red;
+  color: #d62c1a;
   vertical-align: middle;
 }
 
@@ -132,9 +161,9 @@ nav {
 #hintArea {
   margin-top: 1em;
   padding: 1em;
-  background: #f7f9fc;
-  border: 1px solid #cbd6e2;
-  border-radius: 6px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 /* Volume control */
@@ -148,8 +177,9 @@ footer {
   margin-top: 3em;
   padding: 1em;
   text-align: center;
-  background-color: #dbe5f3;
-  border-top: 1px solid #cbd6e2;
+  background-color: #d62c1a;
+  border-top: 1px solid #b52717;
+  color: #fff;
 }
 
 footer img {
@@ -160,5 +190,18 @@ footer img {
 footer span {
   margin-left: 0.8em;
   font-size: 0.9em;
-  color: #555;
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    margin: 2em auto;
+    padding: 1em;
+  }
+
+  button, input[type="email"], input[type="password"], input[type="text"], select {
+    width: 90%;
+    max-width: none;
+  }
 }
