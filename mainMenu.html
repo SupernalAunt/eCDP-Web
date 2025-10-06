@@ -21,19 +21,11 @@
     </nav>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyB7TnwfR38dq-CyJA0qQYUREH4LzOUmkRI",
-      authDomain: "g-site-at.firebaseapp.com",
-      projectId: "g-site-at",
-      appId: "1:324999905109:web:0304c102210e199edab9dc"
-    };
-    firebase.initializeApp(firebaseConfig);
-
-    firebase.auth().onAuthStateChanged(user => {
+    onAuthStateChanged(auth, user => {
       if (user) {
         document.getElementById('crewName').textContent = user.email;
       } else {
@@ -50,10 +42,14 @@
     }
 
     function logout() {
-      firebase.auth().signOut().then(() => {
+      signOut(auth).then(() => {
         window.location.href = "index.html";
       });
     }
+
+    window.startModule = startModule;
+    window.loadLeaderboard = loadLeaderboard;
+    window.logout = logout;
   </script>
 </body>
 </html>
