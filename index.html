@@ -10,7 +10,7 @@
 <body>
   <div class="container">
     <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
-    <h1>Welcome to eCDP</h1>
+    <h1>Welcome to eCDP Web</h1>
     <p>Please log in or register to begin your training</p>
 
     <div class="form-group">
@@ -21,8 +21,6 @@
     </div>
   </div>
 
-  <audio id="loginMusic" src="assets/audio/BG_04.wav" loop></audio>
-
   <script type="module">
     import { auth } from './firebase.js';
     import {
@@ -30,20 +28,14 @@
       createUserWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 
-    const playLoginMusic = () => {
-      const music = document.getElementById('loginMusic');
-      if (music) music.play();
-    };
-
     const login = () => {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
       signInWithEmailAndPassword(auth, email, password)
         .then(user => {
-          playLoginMusic();
           sessionStorage.setItem('ecdpUser', user.user.email);
-          setTimeout(() => window.location.href = "mainMenu.html", 1000);
+          window.location.href = "mainMenu.html";
         })
         .catch(error => {
           alert("Login failed: " + error.message);
@@ -54,9 +46,8 @@
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
-      createUserWithEmailAndPassword(auth, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then(user => {
-          playLoginMusic();
           alert("Registration successful! You can now log in.");
         })
         .catch(error => {
