@@ -1,0 +1,74 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffe600; /* McDonald's yellow */
+  color: #222;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Intro Section */
+#intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#intro video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Title Screen */
+#titleScreen {
+  padding: 3em 1em;
+  animation: fadeIn 1s ease-in;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 1em;
+  color: #d00000; /* McDonald's red */
+}
+
+/* Navigation Buttons */
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: center;
+}
+
+nav button {
+  background-color: #d00000;
+  color: white;
+  border: none;
+  padding: 1em 2em;
+  font-size: 1.2em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+  background-color: #ff4c4c;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
