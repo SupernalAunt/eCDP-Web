@@ -3,38 +3,162 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Order Taking - Cheeseburger</title>
+  <title>Order Taking - Cheeseburger Builder</title>
   <link rel="stylesheet" href="../style.css" />
+  <style>
+    #orderModule {
+      padding: 2em;
+      color: white;
+    }
+
+    #ingredientTray, #burgerStack {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 1em 0;
+    }
+
+    .ingredient {
+      width: 80px;
+      height: 30px;
+      border-radius: 4px;
+      color: white;
+      text-align: center;
+      line-height: 30px;
+      cursor: grab;
+    }
+
+    #burgerStack {
+      flex-direction: column-reverse;
+      align-items: center;
+      min-height: 300px;
+      border: 2px dashed white;
+      padding: 1em;
+    }
+
+    .slot {
+      width: 100px;
+      height: 30px;
+      background-color: #444;
+      margin: 5px 0;
+      border-radius: 4px;
+    }
+
+    #timer, #score, #feedback {
+      margin-top: 1em;
+      font-size: 1.2em;
+    }
+
+    .happy { color: limegreen; }
+    .sad { color: red; }
+  </style>
 </head>
 <body>
   <div id="orderModule">
-    <h2>Build a Cheeseburger</h2>
-    <form id="burgerForm">
-      <label><input type="checkbox" name="ingredient" value="bun-top" checked disabled /> Top Bun</label><br>
-      <label><input type="checkbox" name="ingredient" value="cheese" /> Cheese</label><br>
-      <label><input type="checkbox" name="ingredient" value="patty" /> Beef Patty</label><br>
-      <label><input type="checkbox" name="ingredient" value="bun-bottom" checked disabled /> Bottom Bun</label><br>
-      <button type="submit">Submit Order</button>
-    </form>
-    <div id="orderResult"></div>
+    <h2>Customer Order: <span id="orderName"></span></h2>
+    <div id="timer">Time Left: <span id="time">30</span>s</div>
+    <div id="score">Score: <span id="points">0</span></div>
+
+    <h3>Drag Ingredients into the Burger Stack</h3>
+    <div id="ingredientTray"></div>
+    <div id="burgerStack"></div>
+
+    <button onclick="submitBurger()">Submit Order</button>
+    <div id="feedback"></div>
   </div>
 
   <audio id="loopMusic" src="../assets/audio/BG_09.wav" loop autoplay></audio>
-  <script>
-    document.getElementById('burgerForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const selected = Array.from(document.querySelectorAll('input[name="ingredient"]:checked'))
-                            .map(i => i.value);
-      const required = ['cheese', 'patty'];
-      const missing = required.filter(item => !selected.includes(item));
 
-      const result = document.getElementById('orderResult');
-      if (missing.length === 0) {
-        result.innerHTML = "<p style='color:limegreen;'>✅ Cheeseburger assembled correctly!</p>";
-      } else {
-        result.innerHTML = `<p style='color:red;'>❌ Missing: ${missing.join(', ')}</p>`;
-      }
+  <script>
+    const ingredients = {
+      "bun-top": "#d4a373",
+      "ketchup": "#ff0000",
+      "mustard": "#ffcc00",
+      "pickles": "#66bb66",
+      "onions": "#cccccc",
+      "cheese": "#ffcc66",
+      "patty": "#663300",
+      "bun-bottom": "#d4a373"
+    };
+
+    const scenarios = [
+      { name: "Standard Cheeseburger", order: ["bun-top", "ketchup", "mustard", "pickles", "onions", "cheese", "patty", "bun-bottom"] },
+      { name: "Plain Cheeseburger", order: ["bun-top", "cheese", "patty", "bun-bottom"] },
+      { name: "No Pickles", order: ["bun-top", "ketchup", "mustard", "onions", "cheese", "patty", "bun-bottom"] },
+      { name: "Extra Cheese", order: ["bun-top", "ketchup", "mustard", "pickles", "onions", "cheese", "cheese", "patty", "bun-bottom"] },
+      { name: "Double Patty", order: ["bun-top", "ketchup", "mustard", "pickles", "onions", "cheese", "patty", "patty", "bun-bottom"] }
+    ];
+
+    const selected = scenarios[Math.floor(Math.random() * scenarios.length)];
+    document.getElementById("orderName").textContent = selected.name;
+
+    const tray = document.getElementById("ingredientTray");
+    const stack = document.getElementById("burgerStack");
+
+    // Create draggable ingredients
+    Object.entries(ingredients).forEach(([name, color]) => {
+      const item = document.createElement("div");
+      item.className = "ingredient";
+      item.draggable = true;
+      item.textContent = name;
+      item.style.backgroundColor = color;
+      item.dataset.name = name;
+      item.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", name);
+      });
+      tray.appendChild(item);
     });
+
+    // Create stack slots
+    for (let i = 0; i < selected.order.length; i++) {
+      const slot = document.createElement("div");
+      slot.className = "slot";
+      slot.addEventListener("dragover", e => e.preventDefault());
+      slot.addEventListener("drop", e => {
+        const name = e.dataTransfer.getData("text/plain");
+        slot.textContent = name;
+        slot.style.backgroundColor = ingredients[name] || "#999";
+        slot.dataset.name = name;
+      });
+      stack.appendChild(slot);
+    }
+
+    // Timer
+    let timeLeft = 30;
+    const timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById("time").textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        submitBurger();
+      }
+    }, 1000);
+
+    // Submit logic
+    function submitBurger() {
+      clearInterval(timer);
+      const slots = Array.from(document.querySelectorAll(".slot")).map(s => s.dataset.name);
+      const correct = selected.order;
+      let score = 0;
+      let feedback = "";
+
+      for (let i = 0; i < correct.length; i++) {
+        if (slots[i] === correct[i]) score += 10;
+      }
+
+      document.getElementById("points").textContent = score;
+
+      if (score === correct.length * 10) {
+        feedback = "<p class='happy'>😊 Perfect! Customer is happy!</p>";
+      } else if (score >= correct.length * 7) {
+        feedback = "<p class='happy'>🙂 Good job! Minor mistakes.</p>";
+      } else {
+        feedback = "<p class='sad'>😠 Incorrect build. Customer is upset.</p>";
+      }
+
+      document.getElementById("feedback").innerHTML = feedback;
+    }
   </script>
 </body>
 </html>
