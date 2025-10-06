@@ -1,36 +1,28 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #fff8f0;
+  background-color: #f0f4fa;
   margin: 0;
   padding: 0;
-  color: #333;
+  color: #1c1c1c;
 }
 
 .container {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 900px;
+  margin: 2em auto;
   padding: 2em;
   background-color: #ffffff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05);
 }
 
 .logo {
   display: block;
   margin: 0 auto 1em;
-  max-width: 150px;
+  max-width: 140px;
 }
 
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-  justify-content: center;
-  margin-top: 2em;
-}
-
-button {
-  background-color: #d4a373;
+nav button, .controls button {
+  background-color: #2a5d9f;
   color: white;
   border: none;
   padding: 0.8em 1.2em;
@@ -40,31 +32,25 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #c18b5f;
+nav button:hover, .controls button:hover {
+  background-color: #1f4a80;
 }
 
 footer {
   margin-top: 3em;
   padding: 1em;
   text-align: center;
-  background-color: #f4e3d3;
-  border-top: 1px solid #ccc;
+  background-color: #e6ecf5;
+  border-top: 1px solid #cbd6e2;
 }
 
 footer img {
-  max-height: 40px;
+  max-height: 32px;
   vertical-align: middle;
 }
 
 footer span {
-  margin-left: 1em;
+  margin-left: 0.8em;
   font-size: 0.9em;
   color: #555;
-}
-
-select, input[type="range"] {
-  margin-top: 0.5em;
-  padding: 0.4em;
-  font-size: 1em;
 }
