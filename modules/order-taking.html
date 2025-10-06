@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Taking - Cheeseburger</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div id="orderModule">
+    <h2>Build a Cheeseburger</h2>
+    <form id="burgerForm">
+      <label><input type="checkbox" name="ingredient" value="bun-top" checked disabled /> Top Bun</label><br>
+      <label><input type="checkbox" name="ingredient" value="cheese" /> Cheese</label><br>
+      <label><input type="checkbox" name="ingredient" value="patty" /> Beef Patty</label><br>
+      <label><input type="checkbox" name="ingredient" value="bun-bottom" checked disabled /> Bottom Bun</label><br>
+      <button type="submit">Submit Order</button>
+    </form>
+    <div id="orderResult"></div>
+  </div>
+
+  <audio id="loopMusic" src="../assets/audio/BG_09.wav" loop autoplay></audio>
+  <script>
+    document.getElementById('burgerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const selected = Array.from(document.querySelectorAll('input[name="ingredient"]:checked'))
+                            .map(i => i.value);
+      const required = ['cheese', 'patty'];
+      const missing = required.filter(item => !selected.includes(item));
+
+      const result = document.getElementById('orderResult');
+      if (missing.length === 0) {
+        result.innerHTML = "<p style='color:limegreen;'>✅ Cheeseburger assembled correctly!</p>";
+      } else {
+        result.innerHTML = `<p style='color:red;'>❌ Missing: ${missing.join(', ')}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
