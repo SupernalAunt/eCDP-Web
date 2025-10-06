@@ -1,12 +1,37 @@
-<div class="container" id="mainMenu" style="display:none;">
-  <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
-  <h2>Main Menu</h2>
-  <p>Select a training module:</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Main Menu - eCDP Web</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    <h2>Main Menu</h2>
+    <p>Welcome, <span id="crewName"></span>!</p>
 
-  <nav>
-    <button onclick="startModule('order-taking')">🍔 Order Taking</button>
-    <button onclick="startModule('kitchen-prep')">🍳 Kitchen Prep</button>
-    <button onclick="startModule('customer-service')">💬 Customer Service</button>
-    <button onclick="loadLeaderboard()">🏆 Leaderboard</button>
-  </nav>
-</div>
+    <nav>
+      <button onclick="startModule('order-taking')">🍔 Order Taking</button>
+      <button onclick="startModule('kitchen-prep')">🍳 Kitchen Prep</button>
+      <button onclick="startModule('customer-service')">💬 Customer Service</button>
+      <button onclick="loadLeaderboard()">🏆 Leaderboard</button>
+    </nav>
+  </div>
+
+  <script>
+    // Load crew name from session
+    const name = sessionStorage.getItem('ecdpUser');
+    document.getElementById('crewName').textContent = name || "Crew Member";
+
+    function startModule(moduleName) {
+      window.location.href = `modules/${moduleName}.html`;
+    }
+
+    function loadLeaderboard() {
+      alert("Leaderboard coming soon!");
+    }
+  </script>
+</body>
+</html>
