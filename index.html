@@ -20,24 +20,15 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyB7TnwfR38dq-CyJA0qQYUREH4LzOUmkRI",
-      authDomain: "g-site-at.firebaseapp.com",
-      projectId: "g-site-at",
-      appId: "1:324999905109:web:0304c102210e199edab9dc"
-    };
-    firebase.initializeApp(firebaseConfig);
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 
     function login() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then(user => {
           sessionStorage.setItem('ecdpUser', user.user.email);
           window.location.href = "mainMenu.html";
@@ -51,7 +42,7 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then(user => {
           alert("Registration successful! You can now log in.");
         })
@@ -59,6 +50,9 @@
           alert("Registration failed: " + error.message);
         });
     }
+
+    window.login = login;
+    window.register = register;
   </script>
 </body>
 </html>
