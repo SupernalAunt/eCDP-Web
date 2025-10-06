@@ -1,4 +1,4 @@
-/* Reset and Base */
+/* Base Reset */
 * {
   margin: 0;
   padding: 0;
@@ -7,95 +7,158 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #002b5c, #001a3a); /* Deep blue gradient */
+  background: linear-gradient(to bottom, #002b5c, #001a3a);
   color: #ffffff;
-  text-align: center;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* Login Screen */
-#loginScreen {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100%;
-  padding: 2em;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-#loginScreen h1 {
-  font-size: 3em;
-  color: #ff69b4; /* Pink title text */
-  margin-bottom: 2em;
-  text-shadow: 2px 2px #000000;
-}
-
-#loginScreen input {
-  padding: 0.8em;
-  width: 250px;
-  margin: 0.5em 0;
-  border: none;
-  border-radius: 4px;
-  font-size: 1em;
-}
-
-#loginScreen button {
-  background-color: #ffffff;
-  color: #002b5c;
-  border: none;
-  padding: 1em 2em;
-  font-size: 1.2em;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 1em;
-  transition: background-color 0.3s ease;
-}
-
-#loginScreen button:hover {
-  background-color: #cce6ff;
-}
-
-/* Main Menu */
-#mainMenu {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+/* Logo */
+.logo {
+  width: 220px;
+  margin: 2em auto 1em;
   animation: fadeIn 1s ease-in;
 }
 
-#mainMenu h2 {
-  font-size: 2.5em;
+/* Container */
+.container {
+  width: 100%;
+  max-width: 800px;
+  padding: 2em;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Headings */
+h1, h2, h3 {
+  text-align: center;
   margin-bottom: 1em;
+  text-shadow: 1px 1px #000;
+}
+
+h1 {
+  font-size: 2.8em;
+  color: #ff69b4;
+}
+
+h2 {
+  font-size: 2em;
   color: #ffffff;
-  text-shadow: 1px 1px #000000;
 }
 
-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
+h3 {
+  font-size: 1.5em;
+  color: #cce6ff;
 }
 
-nav button {
+/* Buttons */
+button {
   background-color: #ffffff;
   color: #002b5c;
   border: none;
   padding: 1em 2em;
-  font-size: 1.2em;
-  border-radius: 6px;
+  font-size: 1.1em;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  margin-top: 1em;
 }
 
-nav button:hover {
+button:hover {
   background-color: #cce6ff;
+  transform: scale(1.05);
 }
 
-/* Fade-in Animation */
+/* Form Inputs */
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.8em;
+  margin: 0.5em 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+/* Burger Builder */
+#ingredientTray, #burgerStack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 1em 0;
+}
+
+.ingredient {
+  width: 100px;
+  height: 30px;
+  border-radius: 6px;
+  color: white;
+  text-align: center;
+  line-height: 30px;
+  cursor: grab;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.ingredient:active {
+  transform: scale(0.95);
+}
+
+#burgerStack {
+  flex-direction: column-reverse;
+  align-items: center;
+  min-height: 300px;
+  border: 2px dashed #cce6ff;
+  padding: 1em;
+  border-radius: 12px;
+  background-color: rgba(255,255,255,0.05);
+}
+
+.slot {
+  width: 120px;
+  height: 30px;
+  background-color: #444;
+  margin: 5px 0;
+  border-radius: 6px;
+  text-align: center;
+  line-height: 30px;
+  font-weight: bold;
+}
+
+/* Feedback */
+#feedback {
+  margin-top: 1em;
+  font-size: 1.2em;
+}
+
+.happy {
+  color: #00ff99;
+}
+
+.sad {
+  color: #ff4444;
+}
+
+/* Timer & Score */
+#timer, #score {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
