@@ -14,6 +14,7 @@
       cursor: grab;
       color: white;
       font-weight: bold;
+      text-align: center;
     }
     .slot {
       width: 120px;
@@ -23,6 +24,7 @@
       text-align: center;
       line-height: 30px;
       font-weight: bold;
+      background-color: #f4f4f4;
     }
     .happy {
       color: green;
@@ -40,28 +42,48 @@
     #hintArea {
       margin-top: 1em;
       padding: 10px;
-      background: #f9f9f9;
+      background: #fff8f0;
       border: 1px solid #ccc;
       border-radius: 6px;
+    }
+    .controls {
+      margin-top: 1em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5em;
     }
   </style>
 </head>
 <body>
-  <div id="orderModule" class="container">
-    <h2>Customer Order: <span id="orderName"></span></h2>
-    <div id="timer">Time Left: <span id="time">180</span>s</div>
-    <div id="score">Score: <span id="points">0</span></div>
+  <div class="container">
+    <img src="../assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    <h2>Order Taking Module</h2>
+    <p>Customer Order: <strong><span id="orderName"></span></strong></p>
+    <div>Time Left: <span id="time">180</span>s</div>
+    <div>Score: <span id="points">0</span></div>
 
-    <h3>Drag Ingredients into the Burger Stack</h3>
+    <h3>Build the Burger</h3>
     <div id="ingredientTray"></div>
     <div id="burgerStack"></div>
 
-    <button onclick="submitBurger()">Submit Order</button>
-    <button onclick="resetStack()">Reset Stack</button>
-    <button onclick="showHint()">Hint</button>
+    <div class="controls">
+      <button onclick="submitBurger()">Submit Order</button>
+      <button onclick="resetStack()">Reset Stack</button>
+      <button onclick="showHint()">Hint</button>
+
+      <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    </div>
+
     <div id="feedback"></div>
     <div id="hintArea" style="display:none;"></div>
   </div>
+
+  <footer>
+    <img src="../assets/images/mclogo.png" alt="McDonald's Logo" />
+    <span>eCDP Web Training Platform</span>
+  </footer>
 
   <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
 
@@ -172,6 +194,12 @@
     function resetStack() {
       buildStack();
       document.getElementById("feedback").innerHTML = "";
+      document.getElementById("hintArea").style.display = "none";
+    }
+
+    function adjustVolume(value) {
+      const music = document.getElementById("bgMusic");
+      if (music) music.volume = parseFloat(value);
     }
   </script>
 </body>
