@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* Localized quiz styling (keeps eCDP theme) */
+    /* Quiz layout - blue eCDP theme */
     .quiz-container {
       background: #ffffff;
       border-radius: 12px;
@@ -43,9 +43,7 @@
       background-color: #eef4fc;
     }
 
-    input[type="radio"] {
-      display: none;
-    }
+    input[type="radio"] { display: none; }
 
     .option.selected {
       border-color: #2a5d9f;
@@ -115,31 +113,43 @@
       margin-left: 8px;
     }
 
+    /* Center icons with text */
+    .icon-text {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4em;
+      vertical-align: middle;
+    }
+
+    .icon-text .material-icons {
+      font-size: 20px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
     /* Volume control */
     .volume-control {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.4em;
       margin-top: 1em;
     }
 
     .volume-control .material-icons {
+      font-size: 20px;
       vertical-align: middle;
     }
 
     .volume-control input[type="range"] {
-      width: 120px;
+      width: 130px;
       accent-color: #2a5d9f;
       cursor: pointer;
-    }
-
-    .icon-text {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3em;
       vertical-align: middle;
     }
 
+    /* Smooth fade transitions */
     .fade {
       animation: fadeIn 0.3s ease;
     }
@@ -186,20 +196,25 @@
     let sessionQuestions = [];
     let currentIndex = 0;
     let score = 0;
+    let answered = false;
 
     async function loadQuestions() {
       const res = await fetch('../modules/order-taking.json');
       allQuestions = await res.json();
+
       sessionQuestions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 5);
       currentIndex = 0;
       score = 0;
+
+      document.getElementById("progressBar").style.width = "0%";
       showQuestion();
     }
 
     function showQuestion() {
+      answered = false;
       const quizArea = document.getElementById("quizArea");
       quizArea.classList.remove("fade");
-      void quizArea.offsetWidth; // restart animation
+      void quizArea.offsetWidth;
       quizArea.classList.add("fade");
 
       if (currentIndex >= sessionQuestions.length) {
@@ -207,7 +222,7 @@
       }
 
       const q = sessionQuestions[currentIndex];
-      const progress = ((currentIndex) / sessionQuestions.length) * 100;
+      const progress = (currentIndex / sessionQuestions.length) * 100;
       document.getElementById("progressBar").style.width = progress + "%";
 
       quizArea.innerHTML = `
@@ -219,11 +234,16 @@
           </label>
         `).join('')}
         <div class="feedback" id="feedback"></div>
-        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+        <button id="nextBtn" class="icon-text" onclick="nextQuestion()">
+          <span class="material-icons">arrow_forward</span> Next
+        </button>
       `;
     }
 
     function selectOption(selected) {
+      if (answered) return;
+      answered = true;
+
       const q = sessionQuestions[currentIndex];
       const feedback = document.getElementById("feedback");
       const nextBtn = document.getElementById("nextBtn");
@@ -234,15 +254,15 @@
 
       if (selected === q.answer) {
         feedback.className = "feedback correct";
-        feedback.innerHTML = `<span class="material-icons">check_circle</span> Correct! ${q.explanation}`;
+        feedback.innerHTML = `<span class="material-icons icon-text">check_circle</span> Correct! ${q.explanation}`;
         score++;
       } else {
         feedback.className = "feedback incorrect";
-        feedback.innerHTML = `<span class="material-icons">cancel</span> Incorrect. ${q.explanation}`;
+        feedback.innerHTML = `<span class="material-icons icon-text">cancel</span> Incorrect. ${q.explanation}`;
       }
 
       feedback.style.display = "block";
-      nextBtn.style.display = "inline-block";
+      nextBtn.style.display = "inline-flex";
       document.getElementById("progressBar").style.width = ((currentIndex + 1) / sessionQuestions.length) * 100 + "%";
     }
 
@@ -253,13 +273,21 @@
 
     function showResults() {
       const quizArea = document.getElementById("quizArea");
+      quizArea.classList.remove("fade");
+      void quizArea.offsetWidth;
+      quizArea.classList.add("fade");
+
       quizArea.innerHTML = `
         <h3>Your Score: ${score}/${sessionQuestions.length}</h3>
         <p>${score === 5 ? "Outstanding! Perfect score!" :
             score >= 3 ? "Good job! Review the missed ones." :
             "Keep practicing, you’ll get it next time!"}</p>
-        <button onclick="loadQuestions()"><span class="material-icons">refresh</span> Retry Quiz</button>
-        <button onclick="goToMenu()" class="icon-text"><span class="material-icons">home</span> Main Menu</button>
+        <button onclick="loadQuestions()" class="icon-text">
+          <span class="material-icons">refresh</span> Retry Quiz
+        </button>
+        <button onclick="goToMenu()" class="icon-text">
+          <span class="material-icons">home</span> Main Menu
+        </button>
       `;
       document.getElementById("progressBar").style.width = "100%";
     }
