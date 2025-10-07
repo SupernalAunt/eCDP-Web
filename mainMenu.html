@@ -2,87 +2,186 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Main Menu - eCDP Web</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Fade-in effect for load */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.5s forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Progress bar styling */
+    .progress-container {
+      width: 80%;
+      margin: 1em auto;
+      background-color: #e6ecf5;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 16px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #1e4e91, #3a74d4);
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+
+    .progress-info {
+      text-align: center;
+      font-weight: 600;
+      color: #1e4e91;
+      margin-top: 0.5em;
+    }
+
+    /* Button grid */
+    .menu-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+      margin-top: 2em;
+    }
+
+    button[disabled] {
+      background-color: #aab8cf !important;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Volume styling */
+    .volume-control {
+      text-align: center;
+      margin-top: 2em;
+    }
+
+    .volume-control label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+      color: #1e4e91;
+      font-weight: 500;
+    }
+
+    .volume-control input[type="range"] {
+      width: 160px;
+      accent-color: #1e4e91;
+      vertical-align: middle;
+      margin-left: 0.5em;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
-    <h2>Main Menu</h2>
-    <p>Welcome, <span id="crewName"></span>!</p>
+  <div class="container fade-in">
+    <img src="../assets/images/eplogo.png" alt="eCDP Logo" class="logo" />
+    <h2>Welcome to eCDP Training</h2>
+    <p id="userInfo">Loading user info...</p>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-info" id="progressInfo">Course Progress: 0% (Rank: D)</div>
 
-    <nav>
-      <button onclick="startModule('order-taking')">Order Taking</button>
-      <button onclick="startModule('kitchen-prep')">Kitchen Prep</button>
-      <button onclick="startModule('customer-service')">Customer Service</button>
-      <button onclick="loadLeaderboard()">Leaderboard</button>
-      <button onclick="logout()">Logout</button>
-    </nav>
+    <div class="menu-buttons">
+      <button onclick="goToTraining()"><span class="material-icons">school</span> Start Training</button>
+      <button id="leaderboardBtn" onclick="goToLeaderboard()"><span class="material-icons">emoji_events</span> Leaderboards</button>
+      <button onclick="goToVideoGuide()"><span class="material-icons">movie</span> Video Guide</button>
+      <button id="logoutBtn" onclick="logout()"><span class="material-icons">logout</span> Logout</button>
+    </div>
 
-    <label for="soundtrack">Soundtrack:</label>
-    <select id="soundtrack" onchange="changeTrack(this.value)">
-      <option value="BG_04.wav">Shift Starts</option>
-      <option value="BG_03.wav">eCDP Exercise</option>
-      <option value="BG_09.wav">In The Menus</option>
-    </select>
-
-    <label for="volume">Volume:</label>
-    <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    <div class="volume-control">
+      <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    </div>
   </div>
 
   <footer>
-    <img src="assets/images/mclogo.png" alt="McDonald's Logo" />
+    <img src="../assets/images/mclogo.png" alt="McDonald's Logo" />
     <span>eCDP Web Training Platform</span>
   </footer>
 
-  <audio id="menuMusic" src="assets/audio/BG_04.wav" loop autoplay></audio>
+  <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
 
-  <script type="module">
-    import { auth } from './firebase.js';
-    import {
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
+  <script>
+    // Detect online / offline login state
+    const userInfo = document.getElementById("userInfo");
+    const leaderboardBtn = document.getElementById("leaderboardBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        document.getElementById('crewName').textContent = user.email;
-      } else {
-        window.location.href = "index.html";
+    // Simulate auth state (replace this with your firebase check)
+    const userEmail = localStorage.getItem("ecdplogin_email");
+    let rank = "D";
+
+    // --- Calculate progress based on completed modules ---
+    const totalCourses = 10;
+    const courseKeys = [
+      "course_order-taking", "course_kitchen-prep", "course_customer-service", "course_cleaning",
+      "course_drive-thru", "course_safety", "course_register", "course_food-quality",
+      "course_teamwork", "course_management"
+    ];
+
+    let completedCount = courseKeys.filter(k => localStorage.getItem(k) === "completed").length;
+    let progress = Math.round((completedCount / totalCourses) * 100);
+
+    // Determine rank
+    if (progress >= 100) rank = "S";
+    else if (progress >= 80) rank = "A";
+    else if (progress >= 60) rank = "B";
+    else if (progress >= 30) rank = "C";
+    else rank = "D";
+
+    // Update UI
+    const progressBar = document.getElementById("progressBar");
+    const progressInfo = document.getElementById("progressInfo");
+    progressBar.style.width = progress + "%";
+    progressInfo.textContent = `Course Progress: ${progress}% (Rank: ${rank})`;
+
+    // Display welcome message depending on login state
+    if (userEmail) {
+      userInfo.textContent = `Welcome, ${userEmail} (${rank} Rank)`;
+      leaderboardBtn.disabled = false;
+      logoutBtn.textContent = "Logout";
+    } else {
+      userInfo.textContent = `Welcome, Trainee! (Rank: ${rank})`;
+      leaderboardBtn.disabled = true;
+      logoutBtn.textContent = "Offline Mode";
+    }
+
+    // Volume control
+    function adjustVolume(value) {
+      document.getElementById("bgMusic").volume = parseFloat(value);
+    }
+
+    // Navigation functions
+    function goToTraining() {
+      window.location.href = "./trainingMenu.html";
+    }
+
+    function goToLeaderboard() {
+      if (!leaderboardBtn.disabled) {
+        window.location.href = "./leaderboard.html";
       }
-    });
+    }
 
-    const startModule = (moduleName) => {
-      window.location.href = `modules/${moduleName}.html`;
-    };
+    function goToVideoGuide() {
+      window.location.href = "./video-guides.html";
+    }
 
-    const loadLeaderboard = () => {
-      alert("Leaderboard coming soon!");
-    };
-
-    const logout = () => {
-      document.getElementById('menuMusic').pause();
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      });
-    };
-
-    const changeTrack = (filename) => {
-      const music = document.getElementById('menuMusic');
-      music.src = `assets/audio/${filename}`;
-      music.play();
-    };
-
-    const adjustVolume = (value) => {
-      document.getElementById('menuMusic').volume = parseFloat(value);
-    };
-
-    window.startModule = startModule;
-    window.loadLeaderboard = loadLeaderboard;
-    window.logout = logout;
-    window.changeTrack = changeTrack;
-    window.adjustVolume = adjustVolume;
+    function logout() {
+      localStorage.removeItem("ecdplogin_email");
+      window.location.reload();
+    }
   </script>
 </body>
 </html>
