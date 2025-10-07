@@ -7,89 +7,170 @@
   <link rel="stylesheet" href="../style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* Quiz card for single question */
-    .question-card {
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1.5em;
+    /* Localized quiz styling (keeps eCDP theme) */
+    .quiz-container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 2em;
+      max-width: 700px;
       margin: 2em auto;
-      max-width: 600px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       text-align: center;
+      transition: all 0.3s ease;
     }
 
-    .question-card p {
+    .question-text {
       font-weight: 600;
-      font-size: 1.1em;
-      margin-bottom: 1em;
+      font-size: 1.2em;
+      color: #2a5d9f;
+      margin-bottom: 1.5em;
     }
 
-    .option-label {
+    .option {
       display: block;
-      border: 1px solid #ccc;
+      border: 1px solid #cbd6e2;
       border-radius: 8px;
       padding: 0.8em;
-      margin: 0.5em 0;
+      margin: 0.6em auto;
+      width: 90%;
       cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
+      background-color: #f7f9fc;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .option-label:hover {
-      background-color: #f9f2e7;
-      border-color: #d62c1a;
+    .option:hover {
+      border-color: #2a5d9f;
+      background-color: #eef4fc;
     }
 
-    input[type="radio"] { display: none; }
-
-    input[type="radio"]:checked + .option-label {
-      border-color: #d62c1a;
-      background-color: #f9f2e7;
-    }
-
-    .explanation {
-      margin-top: 1em;
-      font-size: 0.95em;
+    input[type="radio"] {
       display: none;
-      padding: 0.8em;
-      border-left: 4px solid #d62c1a;
-      background-color: #fff7e6;
     }
 
-    .explanation.correct { border-left-color: #ffc72c; }
-    .explanation.incorrect { border-left-color: #d62c1a; }
+    .option.selected {
+      border-color: #2a5d9f;
+      background-color: #e6f0ff;
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 1em;
+      padding: 1em;
+      border-radius: 8px;
+      font-size: 0.95em;
+    }
+
+    .feedback.correct {
+      background: #e8f8ed;
+      color: #0d7a27;
+      border-left: 5px solid #0d7a27;
+    }
+
+    .feedback.incorrect {
+      background: #fdeaea;
+      color: #a51c1c;
+      border-left: 5px solid #a51c1c;
+    }
 
     #nextBtn {
       margin-top: 1.5em;
       display: none;
-      background-color: #d62c1a;
+      background-color: #2a5d9f;
       color: white;
       border: none;
       padding: 0.8em 1.5em;
       border-radius: 8px;
-      cursor: pointer;
       font-weight: 600;
-      transition: background-color 0.3s;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
-    #nextBtn:hover { background-color: #b52717; }
+    #nextBtn:hover {
+      background-color: #1f4a80;
+    }
+
+    .progress {
+      width: 80%;
+      height: 12px;
+      background: #eaf0f9;
+      border-radius: 8px;
+      margin: 1.5em auto;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #2a5d9f;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    footer img {
+      max-height: 32px;
+      vertical-align: middle;
+    }
+
+    footer span {
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    /* Volume control */
+    .volume-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+      margin-top: 1em;
+    }
+
+    .volume-control .material-icons {
+      vertical-align: middle;
+    }
+
+    .volume-control input[type="range"] {
+      width: 120px;
+      accent-color: #2a5d9f;
+      cursor: pointer;
+    }
+
+    .icon-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      vertical-align: middle;
+    }
+
+    .fade {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <img src="../assets/images/logo.png" alt="eCDP Logo" class="logo" />
     <h2>Order Taking Quiz</h2>
-    <p>Answer one question at a time. Read the explanation, then click Next.</p>
+    <p>Answer 5 random questions to sharpen your skills.</p>
 
-    <div id="quizArea"></div>
-    <div style="text-align:center;">
-      <button id="nextBtn" onclick="nextQuestion()">Next Question <span class="material-icons">arrow_forward</span></button>
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <div class="controls" style="text-align:center; margin-top:2em;">
-      <button onclick="goToMenu()"><span class="material-icons">arrow_back</span> Back to Menu</button>
-      <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
-      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    <div id="quizArea" class="quiz-container fade"></div>
+
+    <div class="controls" style="text-align:center; margin-top:1.5em;">
+      <div class="volume-control">
+        <span class="material-icons">volume_up</span>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+      </div>
+      <br>
+      <button onclick="goToMenu()" class="icon-text">
+        <span class="material-icons">arrow_back</span> Back to Main Menu
+      </button>
     </div>
   </div>
 
@@ -102,84 +183,85 @@
 
   <script>
     let allQuestions = [];
-    let currentQuestionIndex = 0;
+    let sessionQuestions = [];
+    let currentIndex = 0;
     let score = 0;
 
-    // Load questions from JSON file
-    fetch('../modules/order-taking.json')
-      .then(response => response.json())
-      .then(data => {
-        allQuestions = data;
-        allQuestions = allQuestions.sort(() => Math.random() - 0.5); // shuffle
-        showQuestion();
-      })
-      .catch(err => console.error("Error loading questions:", err));
+    async function loadQuestions() {
+      const res = await fetch('../modules/order-taking.json');
+      allQuestions = await res.json();
+      sessionQuestions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 5);
+      currentIndex = 0;
+      score = 0;
+      showQuestion();
+    }
 
     function showQuestion() {
       const quizArea = document.getElementById("quizArea");
-      quizArea.innerHTML = "";
-      document.getElementById("nextBtn").style.display = "none";
+      quizArea.classList.remove("fade");
+      void quizArea.offsetWidth; // restart animation
+      quizArea.classList.add("fade");
 
-      if (currentQuestionIndex >= allQuestions.length) {
-        quizArea.innerHTML = `<p>You completed the quiz! Your score: ${score} / ${allQuestions.length}</p>`;
-        return;
+      if (currentIndex >= sessionQuestions.length) {
+        return showResults();
       }
 
-      const q = allQuestions[currentQuestionIndex];
-      const card = document.createElement("div");
-      card.className = "question-card";
+      const q = sessionQuestions[currentIndex];
+      const progress = ((currentIndex) / sessionQuestions.length) * 100;
+      document.getElementById("progressBar").style.width = progress + "%";
 
-      const qText = document.createElement("p");
-      qText.textContent = `Question ${currentQuestionIndex + 1}: ${q.question}`;
-      card.appendChild(qText);
-
-      q.options.forEach((opt, j) => {
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = "currentQ";
-        radio.value = j;
-        radio.id = `opt${j}`;
-
-        const label = document.createElement("label");
-        label.htmlFor = radio.id;
-        label.className = "option-label";
-        label.textContent = opt;
-
-        radio.addEventListener("change", () => showExplanation(j));
-
-        card.appendChild(radio);
-        card.appendChild(label);
-      });
-
-      const explanationDiv = document.createElement("div");
-      explanationDiv.className = "explanation";
-      explanationDiv.id = "exp";
-      card.appendChild(explanationDiv);
-
-      quizArea.appendChild(card);
+      quizArea.innerHTML = `
+        <p class="question-text">Question ${currentIndex + 1} of ${sessionQuestions.length}</p>
+        <p>${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <label class="option" onclick="selectOption(${i})">
+            <input type="radio" name="q" value="${i}"> ${opt}
+          </label>
+        `).join('')}
+        <div class="feedback" id="feedback"></div>
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+      `;
     }
 
-    function showExplanation(selectedIndex) {
-      const q = allQuestions[currentQuestionIndex];
-      const expDiv = document.getElementById("exp");
+    function selectOption(selected) {
+      const q = sessionQuestions[currentIndex];
+      const feedback = document.getElementById("feedback");
       const nextBtn = document.getElementById("nextBtn");
+      const options = document.querySelectorAll(".option");
 
-      if (selectedIndex === q.answer) {
+      options.forEach(opt => opt.style.pointerEvents = "none");
+      options[selected].classList.add("selected");
+
+      if (selected === q.answer) {
+        feedback.className = "feedback correct";
+        feedback.innerHTML = `<span class="material-icons">check_circle</span> Correct! ${q.explanation}`;
         score++;
-        expDiv.className = "explanation correct";
-        expDiv.innerHTML = `<span class="material-icons">check_circle</span> Correct! ${q.explanation}`;
       } else {
-        expDiv.className = "explanation incorrect";
-        expDiv.innerHTML = `<span class="material-icons">cancel</span> Incorrect. ${q.explanation}`;
+        feedback.className = "feedback incorrect";
+        feedback.innerHTML = `<span class="material-icons">cancel</span> Incorrect. ${q.explanation}`;
       }
 
-      expDiv.style.display = "block";
+      feedback.style.display = "block";
       nextBtn.style.display = "inline-block";
+      document.getElementById("progressBar").style.width = ((currentIndex + 1) / sessionQuestions.length) * 100 + "%";
     }
 
     function nextQuestion() {
-      currentQuestionIndex++;
+      currentIndex++;
       showQuestion();
+    }
+
+    function showResults() {
+      const quizArea = document.getElementById("quizArea");
+      quizArea.innerHTML = `
+        <h3>Your Score: ${score}/${sessionQuestions.length}</h3>
+        <p>${score === 5 ? "Outstanding! Perfect score!" :
+            score >= 3 ? "Good job! Review the missed ones." :
+            "Keep practicing, you’ll get it next time!"}</p>
+        <button onclick="loadQuestions()"><span class="material-icons">refresh</span> Retry Quiz</button>
+        <button onclick="goToMenu()" class="icon-text"><span class="material-icons">home</span> Main Menu</button>
+      `;
+      document.getElementById("progressBar").style.width = "100%";
     }
 
     function goToMenu() {
@@ -189,6 +271,8 @@
     function adjustVolume(value) {
       document.getElementById("bgMusic").volume = parseFloat(value);
     }
+
+    loadQuestions();
   </script>
 </body>
 </html>
