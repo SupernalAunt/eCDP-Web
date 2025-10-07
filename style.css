@@ -1,23 +1,32 @@
-/* Import Google Fonts */
+/* -------------------------------------
+   eCDP-Web Global Style (Blue Theme)
+   Updated for static background + new logo
+-------------------------------------- */
+
+/* Google Fonts (used globally) */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap');
 
-/* Base layout */
+/* -----------------------------
+   GLOBAL LAYOUT
+----------------------------- */
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: #f9f9f9;
+  background: url("../assets/images/background.png") no-repeat center center fixed;
+  background-size: cover;
   margin: 0;
   padding: 0;
-  color: #333333;
+  color: #1c1c1c;
 }
 
-/* Container styling */
+/* Container styling (white card layout) */
 .container {
   max-width: 960px;
   margin: 3em auto;
   padding: 2em;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
 }
 
 /* Logo styling */
@@ -31,7 +40,7 @@ body {
 h1, h2, h3 {
   text-align: center;
   font-family: 'Roboto', sans-serif;
-  color: #d62c1a; /* McDonald’s red */
+  color: #1e4e91;
   margin-bottom: 0.5em;
 }
 
@@ -39,36 +48,45 @@ p {
   text-align: center;
   margin-bottom: 1.5em;
   font-size: 1em;
+  color: #333;
 }
 
-/* Form inputs */
+/* -----------------------------
+   INPUTS & FORM FIELDS
+----------------------------- */
 input[type="email"],
 input[type="password"],
 input[type="text"],
 select {
   display: block;
   width: 100%;
-  max-width: 400px;
-  margin: 0.5em auto;
+  max-width: 420px;
+  margin: 0.6em auto;
   padding: 0.8em;
   font-size: 1em;
-  border: 1px solid #ccc;
+  border: 1px solid #cdd7e3;
   border-radius: 8px;
-  background-color: #f4f4f4;
+  background-color: #f4f7fb;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
-  border-color: #d62c1a;
-  box-shadow: 0 0 5px rgba(214,44,26,0.3);
+  border-color: #1e4e91;
+  box-shadow: 0 0 6px rgba(30, 78, 145, 0.3);
 }
 
-/* Buttons */
+/* -----------------------------
+   BUTTONS
+----------------------------- */
 button {
-  display: inline-block;
-  background-color: #d62c1a;
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  background-color: #1e4e91;
+  color: #ffffff;
   border: none;
   padding: 0.9em 1.6em;
   margin: 0.5em;
@@ -81,11 +99,19 @@ button {
 }
 
 button:hover {
-  background-color: #b52717;
+  background-color: #163b6f;
   transform: translateY(-1px);
 }
 
-/* Navigation */
+button .material-icons {
+  font-size: 20px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* -----------------------------
+   NAVIGATION
+----------------------------- */
 nav {
   display: flex;
   flex-wrap: wrap;
@@ -94,8 +120,11 @@ nav {
   margin-top: 2em;
 }
 
-/* Quiz / Ingredient tray and burger stack */
-#ingredientTray, #burgerStack {
+/* -----------------------------
+   QUIZ & INTERACTIVE MODULES
+----------------------------- */
+#ingredientTray,
+#burgerStack {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,7 +140,7 @@ nav {
   font-weight: bold;
   text-align: center;
   width: 140px;
-  background-color: #d62c1a;
+  background-color: #1e4e91;
   transition: transform 0.2s ease;
 }
 
@@ -123,63 +152,69 @@ nav {
   width: 140px;
   height: 32px;
   margin: 5px;
-  border: 2px dashed #ccc;
+  border: 2px dashed #cbd6e2;
   text-align: center;
   line-height: 32px;
   font-weight: bold;
-  background-color: #f4f4f4;
+  background-color: #f4f7fb;
   border-radius: 6px;
 }
 
-/* Feedback messages */
+/* -----------------------------
+   FEEDBACK & STATUS TEXT
+----------------------------- */
 .happy {
-  color: #ffc72c; /* Gold */
-  font-size: 1.25em;
+  color: #0c7b2b;
+  font-size: 1.2em;
   text-align: center;
-  animation: fadeIn 0.5s ease-in;
+  font-weight: 600;
 }
 
 .sad {
-  color: #d62c1a;
-  font-size: 1.25em;
+  color: #a32020;
+  font-size: 1.2em;
   text-align: center;
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px);}
-  to { opacity: 1; transform: translateY(0);}
+  font-weight: 600;
 }
 
 .material-icons.large {
   font-size: 48px;
-  color: #d62c1a;
+  color: #1e4e91;
   vertical-align: middle;
 }
 
-/* Hint area */
+/* -----------------------------
+   MISC COMPONENTS
+----------------------------- */
 #hintArea {
   margin-top: 1em;
   padding: 1em;
-  background-color: #f4f4f4;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background: rgba(244, 247, 251, 0.95);
+  border: 1px solid #cbd6e2;
+  border-radius: 6px;
 }
 
-/* Volume control */
+/* -----------------------------
+   VOLUME CONTROL
+----------------------------- */
 input[type="range"] {
-  width: 200px;
+  width: 160px;
   margin-top: 0.5em;
+  accent-color: #1e4e91;
+  cursor: pointer;
 }
 
-/* Footer */
+/* -----------------------------
+   FOOTER
+----------------------------- */
 footer {
   margin-top: 3em;
   padding: 1em;
   text-align: center;
-  background-color: #d62c1a;
-  border-top: 1px solid #b52717;
-  color: #fff;
+  background-color: rgba(30, 78, 145, 0.9);
+  border-top: 1px solid #163b6f;
+  color: #ffffff;
+  border-radius: 8px 8px 0 0;
 }
 
 footer img {
@@ -190,17 +225,23 @@ footer img {
 footer span {
   margin-left: 0.8em;
   font-size: 0.9em;
-  color: #fff;
+  color: #e4eaf2;
 }
 
-/* Responsive adjustments */
+/* -----------------------------
+   RESPONSIVE DESIGN
+----------------------------- */
 @media (max-width: 600px) {
   .container {
     margin: 2em auto;
-    padding: 1em;
+    padding: 1.2em;
   }
 
-  button, input[type="email"], input[type="password"], input[type="text"], select {
+  button,
+  input[type="email"],
+  input[type="password"],
+  input[type="text"],
+  select {
     width: 90%;
     max-width: none;
   }
