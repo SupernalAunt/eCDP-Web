@@ -4,15 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Main Menu - eCDP Web</title>
-  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* Fade-in effect for load */
+    /* Temporary internal fixes — optional to move into style.css later */
+
+    /* Fade-in animation */
     .fade-in {
       opacity: 0;
       transform: translateY(10px);
       animation: fadeInUp 0.5s forwards;
     }
+
     @keyframes fadeInUp {
       to {
         opacity: 1;
@@ -20,7 +23,7 @@
       }
     }
 
-    /* Progress bar styling */
+    /* Progress Bar */
     .progress-container {
       width: 80%;
       margin: 1em auto;
@@ -45,7 +48,7 @@
       margin-top: 0.5em;
     }
 
-    /* Button grid */
+    /* Button layout */
     .menu-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -80,14 +83,31 @@
       vertical-align: middle;
       margin-left: 0.5em;
     }
+
+    /* Logo visibility fix */
+    .logo-bg {
+      display: inline-block;
+      background: rgba(255,255,255,0.8);
+      padding: 12px 20px;
+      border-radius: 12px;
+    }
+
+    /* Body background (CSS gradient replacement for image) */
+    body {
+      background: linear-gradient(135deg, #dce6f5 0%, #b4caea 50%, #89aede 100%);
+      min-height: 100vh;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
   <div class="container fade-in">
-    <img src="/assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    <div class="logo-bg">
+      <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
+    </div>
     <h2>Welcome to eCDP Training</h2>
     <p id="userInfo">Loading user info...</p>
-    
+
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
@@ -107,23 +127,14 @@
   </div>
 
   <footer>
-    <img src="../assets/images/mclogo.png" alt="McDonald's Logo" />
+    <img src="assets/images/mclogo.png" alt="McDonald's Logo" />
     <span>eCDP Web Training Platform</span>
   </footer>
 
-  <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
+  <audio id="bgMusic" src="assets/audio/BG_03.wav" loop autoplay></audio>
 
   <script>
-    // Detect online / offline login state
-    const userInfo = document.getElementById("userInfo");
-    const leaderboardBtn = document.getElementById("leaderboardBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    // Simulate auth state (replace this with your firebase check)
-    const userEmail = localStorage.getItem("ecdplogin_email");
-    let rank = "D";
-
-    // --- Calculate progress based on completed modules ---
+    // --- Load and display progress/rank ---
     const totalCourses = 10;
     const courseKeys = [
       "course_order-taking", "course_kitchen-prep", "course_customer-service", "course_cleaning",
@@ -134,20 +145,24 @@
     let completedCount = courseKeys.filter(k => localStorage.getItem(k) === "completed").length;
     let progress = Math.round((completedCount / totalCourses) * 100);
 
-    // Determine rank
+    let rank = "D";
     if (progress >= 100) rank = "S";
     else if (progress >= 80) rank = "A";
     else if (progress >= 60) rank = "B";
     else if (progress >= 30) rank = "C";
-    else rank = "D";
 
-    // Update UI
     const progressBar = document.getElementById("progressBar");
     const progressInfo = document.getElementById("progressInfo");
     progressBar.style.width = progress + "%";
     progressInfo.textContent = `Course Progress: ${progress}% (Rank: ${rank})`;
 
-    // Display welcome message depending on login state
+    // --- Display user info / offline mode ---
+    const userInfo = document.getElementById("userInfo");
+    const leaderboardBtn = document.getElementById("leaderboardBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const userEmail = localStorage.getItem("ecdplogin_email");
+
     if (userEmail) {
       userInfo.textContent = `Welcome, ${userEmail} (${rank} Rank)`;
       leaderboardBtn.disabled = false;
@@ -158,29 +173,29 @@
       logoutBtn.textContent = "Offline Mode";
     }
 
-    // Volume control
-    function adjustVolume(value) {
-      document.getElementById("bgMusic").volume = parseFloat(value);
-    }
-
-    // Navigation functions
+    // --- Navigation ---
     function goToTraining() {
-      window.location.href = "./trainingMenu.html";
+      window.location.href = "modules/trainingMenu.html";
     }
 
     function goToLeaderboard() {
       if (!leaderboardBtn.disabled) {
-        window.location.href = "./leaderboard.html";
+        window.location.href = "modules/leaderboard.html";
       }
     }
 
     function goToVideoGuide() {
-      window.location.href = "./video-guides.html";
+      window.location.href = "modules/video-guides.html";
     }
 
     function logout() {
       localStorage.removeItem("ecdplogin_email");
       window.location.reload();
+    }
+
+    // --- Volume Control ---
+    function adjustVolume(value) {
+      document.getElementById("bgMusic").volume = parseFloat(value);
     }
   </script>
 </body>
