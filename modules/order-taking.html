@@ -7,293 +7,268 @@
   <link rel="stylesheet" href="../style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* Quiz layout - blue eCDP theme */
-    .quiz-container {
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      padding: 2em;
-      max-width: 700px;
-      margin: 2em auto;
+    /* NAVBAR + FOOTER consistency */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6em 1.5em;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+
+    .navbar img {
+      max-height: 40px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 10px;
+      padding: 5px 12px;
+    }
+
+    .navbar h1 {
+      color: #1e4e91;
+      font-size: 1.4em;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+    }
+
+    .navbar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      color: #1e4e91;
+      font-weight: 500;
+    }
+
+    .navbar input[type="range"] {
+      width: 140px;
+      accent-color: #1e4e91;
+      cursor: pointer;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(30, 78, 145, 0.92);
+      color: #fff;
       text-align: center;
-      transition: all 0.3s ease;
+      padding: 0.8em 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6em;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+    }
+
+    footer img {
+      max-height: 28px;
+    }
+
+    footer span {
+      font-size: 0.95em;
+      color: #e4eaf2;
+    }
+
+    /* QUIZ CONTAINER */
+    .quiz-container {
+      max-width: 700px;
+      margin: 7em auto 5em;
+      background: rgba(255,255,255,0.97);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 2em;
+      text-align: center;
+    }
+
+    .question-number {
+      font-weight: bold;
+      color: #1e4e91;
+      font-size: 1.1em;
+      margin-bottom: 0.5em;
     }
 
     .question-text {
-      font-weight: 600;
-      font-size: 1.2em;
-      color: #2a5d9f;
+      font-size: 1.1em;
       margin-bottom: 1.5em;
+      color: #333;
     }
 
-    .option {
-      display: block;
-      border: 1px solid #cbd6e2;
-      border-radius: 8px;
-      padding: 0.8em;
-      margin: 0.6em auto;
-      width: 90%;
+    .options {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.7em;
+    }
+
+    .option-btn {
+      background: #f7f9fc;
+      border: 2px solid #cbd6e2;
+      border-radius: 6px;
+      padding: 0.7em 1em;
+      width: 100%;
+      text-align: left;
+      font-size: 1em;
+      transition: all 0.2s ease;
       cursor: pointer;
-      background-color: #f7f9fc;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .option:hover {
-      border-color: #2a5d9f;
-      background-color: #eef4fc;
+    .option-btn:hover {
+      background: #eaf0f9;
     }
 
-    input[type="radio"] { display: none; }
-
-    .option.selected {
-      border-color: #2a5d9f;
-      background-color: #e6f0ff;
+    .correct {
+      background: #dff5e3;
+      border-color: #4CAF50;
     }
 
-    .feedback {
-      display: none;
+    .incorrect {
+      background: #fbe4e6;
+      border-color: #f44336;
+    }
+
+    .explanation {
       margin-top: 1em;
-      padding: 1em;
-      border-radius: 8px;
-      font-size: 0.95em;
+      color: #1e4e91;
+      font-weight: 500;
     }
 
-    .feedback.correct {
-      background: #e8f8ed;
-      color: #0d7a27;
-      border-left: 5px solid #0d7a27;
-    }
-
-    .feedback.incorrect {
-      background: #fdeaea;
-      color: #a51c1c;
-      border-left: 5px solid #a51c1c;
-    }
-
-    #nextBtn {
+    .next-btn {
       margin-top: 1.5em;
-      display: none;
-      background-color: #2a5d9f;
+      background: #1e4e91;
       color: white;
       border: none;
       padding: 0.8em 1.5em;
       border-radius: 8px;
-      font-weight: 600;
+      font-size: 1em;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    #nextBtn:hover {
-      background-color: #1f4a80;
+    .next-btn:hover {
+      background: #163b6f;
     }
 
-    .progress {
-      width: 80%;
-      height: 12px;
-      background: #eaf0f9;
-      border-radius: 8px;
-      margin: 1.5em auto;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: #2a5d9f;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    footer img {
-      max-height: 32px;
-      vertical-align: middle;
-    }
-
-    footer span {
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-
-    /* Center icons with text */
-    .icon-text {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4em;
-      vertical-align: middle;
-    }
-
-    .icon-text .material-icons {
-      font-size: 20px;
-      line-height: 1;
-      vertical-align: middle;
-    }
-
-    /* Volume control */
-    .volume-control {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4em;
-      margin-top: 1em;
-    }
-
-    .volume-control .material-icons {
-      font-size: 20px;
-      vertical-align: middle;
-    }
-
-    .volume-control input[type="range"] {
-      width: 130px;
-      accent-color: #2a5d9f;
-      cursor: pointer;
-      vertical-align: middle;
-    }
-
-    /* Smooth fade transitions */
-    .fade {
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .final-score {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #1e4e91;
+      margin-bottom: 1em;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="../assets/images/logo.png" alt="eCDP Logo" class="logo" />
-    <h2>Order Taking Quiz</h2>
-    <p>Answer 5 random questions to sharpen your skills.</p>
-
-    <div class="progress">
-      <div class="progress-bar" id="progressBar"></div>
+  <nav class="navbar">
+    <div class="nav-left">
+      <img src="../assets/images/logo.png" alt="eCDP Logo">
     </div>
-
-    <div id="quizArea" class="quiz-container fade"></div>
-
-    <div class="controls" style="text-align:center; margin-top:1.5em;">
-      <div class="volume-control">
-        <span class="material-icons">volume_up</span>
-        <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
-      </div>
-      <br>
-      <button onclick="goToMenu()" class="icon-text">
-        <span class="material-icons">arrow_back</span> Back to Main Menu
-      </button>
+    <div class="nav-center">
+      <h1>Order Taking Quiz</h1>
     </div>
+    <div class="nav-right">
+      <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    </div>
+  </nav>
+
+  <div class="quiz-container" id="quizContainer">
+    <h2>Loading Quiz...</h2>
   </div>
 
   <footer>
-    <img src="../assets/images/mclogo.png" alt="McDonald's Logo" />
+    <img src="../assets/images/mclogo.png" alt="McDonald's Logo">
     <span>eCDP Web Training Platform</span>
   </footer>
 
   <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
 
   <script>
-    let allQuestions = [];
-    let sessionQuestions = [];
+    let questions = [];
     let currentIndex = 0;
     let score = 0;
-    let answered = false;
 
     async function loadQuestions() {
-      const res = await fetch('../modules/order-taking.json');
-      allQuestions = await res.json();
-
-      sessionQuestions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 5);
-      currentIndex = 0;
-      score = 0;
-
-      document.getElementById("progressBar").style.width = "0%";
+      const res = await fetch("./order-taking.json");
+      const data = await res.json();
+      questions = data.sort(() => Math.random() - 0.5);
       showQuestion();
     }
 
     function showQuestion() {
-      answered = false;
-      const quizArea = document.getElementById("quizArea");
-      quizArea.classList.remove("fade");
-      void quizArea.offsetWidth;
-      quizArea.classList.add("fade");
+      const container = document.getElementById("quizContainer");
+      container.innerHTML = "";
 
-      if (currentIndex >= sessionQuestions.length) {
-        return showResults();
+      if (currentIndex >= questions.length) {
+        container.innerHTML = `
+          <div class="final-score">
+            You scored ${score} out of ${questions.length}.
+          </div>
+          <button class="next-btn" onclick="window.location.href='./../trainingMenu.html'">
+            Return to Training Menu
+          </button>
+        `;
+        localStorage.setItem("course_order-taking", "completed");
+        return;
       }
 
-      const q = sessionQuestions[currentIndex];
-      const progress = (currentIndex / sessionQuestions.length) * 100;
-      document.getElementById("progressBar").style.width = progress + "%";
+      const q = questions[currentIndex];
+      const shuffledOptions = q.options
+        .map((opt, idx) => ({ opt, idx }))
+        .sort(() => Math.random() - 0.5);
 
-      quizArea.innerHTML = `
-        <p class="question-text">Question ${currentIndex + 1} of ${sessionQuestions.length}</p>
-        <p>${q.question}</p>
-        ${q.options.map((opt, i) => `
-          <label class="option" onclick="selectOption(${i})">
-            <input type="radio" name="q" value="${i}"> ${opt}
-          </label>
-        `).join('')}
-        <div class="feedback" id="feedback"></div>
-        <button id="nextBtn" class="icon-text" onclick="nextQuestion()">
-          <span class="material-icons">arrow_forward</span> Next
-        </button>
+      const qBox = document.createElement("div");
+
+      qBox.innerHTML = `
+        <div class="question-number">Q${currentIndex + 1} of ${questions.length}</div>
+        <div class="question-text">${q.question}</div>
       `;
+
+      const optionsDiv = document.createElement("div");
+      optionsDiv.classList.add("options");
+
+      const letters = ["A", "B", "C", "D"];
+
+      shuffledOptions.forEach((o, i) => {
+        const btn = document.createElement("button");
+        btn.classList.add("option-btn");
+        btn.textContent = `${letters[i]}) ${o.opt}`;
+        btn.onclick = () => checkAnswer(btn, o.idx === q.answer, q.explanation);
+        optionsDiv.appendChild(btn);
+      });
+
+      qBox.appendChild(optionsDiv);
+      container.appendChild(qBox);
     }
 
-    function selectOption(selected) {
-      if (answered) return;
-      answered = true;
-
-      const q = sessionQuestions[currentIndex];
-      const feedback = document.getElementById("feedback");
-      const nextBtn = document.getElementById("nextBtn");
-      const options = document.querySelectorAll(".option");
-
-      options.forEach(opt => opt.style.pointerEvents = "none");
-      options[selected].classList.add("selected");
-
-      if (selected === q.answer) {
-        feedback.className = "feedback correct";
-        feedback.innerHTML = `<span class="material-icons icon-text">check_circle</span> Correct! ${q.explanation}`;
+    function checkAnswer(btn, correct, explanation) {
+      const options = document.querySelectorAll(".option-btn");
+      options.forEach(o => o.disabled = true);
+      if (correct) {
+        btn.classList.add("correct");
         score++;
       } else {
-        feedback.className = "feedback incorrect";
-        feedback.innerHTML = `<span class="material-icons icon-text">cancel</span> Incorrect. ${q.explanation}`;
+        btn.classList.add("incorrect");
       }
 
-      feedback.style.display = "block";
-      nextBtn.style.display = "inline-flex";
-      document.getElementById("progressBar").style.width = ((currentIndex + 1) / sessionQuestions.length) * 100 + "%";
-    }
+      const expl = document.createElement("div");
+      expl.classList.add("explanation");
+      expl.textContent = explanation;
+      document.getElementById("quizContainer").appendChild(expl);
 
-    function nextQuestion() {
-      currentIndex++;
-      showQuestion();
-    }
-
-    function showResults() {
-      const quizArea = document.getElementById("quizArea");
-      quizArea.classList.remove("fade");
-      void quizArea.offsetWidth;
-      quizArea.classList.add("fade");
-
-      quizArea.innerHTML = `
-        <h3>Your Score: ${score}/${sessionQuestions.length}</h3>
-        <p>${score === 5 ? "Outstanding! Perfect score!" :
-            score >= 3 ? "Good job! Review the missed ones." :
-            "Keep practicing, you’ll get it next time!"}</p>
-        <button onclick="loadQuestions()" class="icon-text">
-          <span class="material-icons">refresh</span> Retry Quiz
-        </button>
-        <button onclick="goToMenu()" class="icon-text">
-          <span class="material-icons">home</span> Main Menu
-        </button>
-      `;
-      document.getElementById("progressBar").style.width = "100%";
-    }
-
-    function goToMenu() {
-      window.location.href = "../mainMenu.html";
+      const next = document.createElement("button");
+      next.classList.add("next-btn");
+      next.textContent = "Next Question";
+      next.onclick = () => {
+        currentIndex++;
+        showQuestion();
+      };
+      document.getElementById("quizContainer").appendChild(next);
     }
 
     function adjustVolume(value) {
