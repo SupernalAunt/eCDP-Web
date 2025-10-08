@@ -1,1 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Menu - eCDP Web</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6em 1.5em;
+      z-index: 1000;
+    }
 
+    .navbar .nav-left img {
+      max-height: 40px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+      padding: 6px 12px;
+    }
+
+    .navbar .nav-center h1 {
+      color: #1e4e91;
+      font-size: 1.4em;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      text-align: center;
+    }
+
+    .navbar .nav-right label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      color: #1e4e91;
+      font-weight: 500;
+    }
+
+    .navbar input[type="range"] {
+      width: 140px;
+      accent-color: #1e4e91;
+      margin-left: 0.3em;
+      cursor: pointer;
+    }
+
+    /* Container spacing below navbar */
+    .container {
+      margin-top: 6em;
+    }
+
+    /* Course Grid */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5em;
+      margin-top: 2em;
+    }
+
+    .course-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 1.5em;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .course-card h3 {
+      margin: 0.3em 0;
+      color: #1e4e91;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .course-card p {
+      font-size: 0.95em;
+      color: #444;
+      margin-bottom: 1.2em;
+    }
+
+    /* Level Badge */
+    .level-badge {
+      display: inline-block;
+      padding: 0.3em 0.8em;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.8em;
+      color: #fff;
+      margin-bottom: 0.6em;
+    }
+
+    .beginner { background: #4CAF50; }
+    .intermediate { background: #2196F3; }
+    .advanced { background: #FF9800; }
+    .experienced { background: #F44336; }
+
+    /* Completed check */
+    .completed {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #4CAF50;
+      font-size: 22px;
+    }
+
+    /* Back Button */
+    .back-button {
+      display: block;
+      margin: 2.5em auto 1em;
+      background-color: #1e4e91;
+      color: white;
+      border: none;
+      padding: 0.8em 1.5em;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #163b6f;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(30, 78, 145, 0.92);
+      backdrop-filter: blur(5px);
+      color: #fff;
+      text-align: center;
+      padding: 0.8em 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6em;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    footer img {
+      max-height: 28px;
+    }
+
+    footer span {
+      font-size: 0.95em;
+      color: #e4eaf2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <img src="../assets/images/logo.png" alt="eCDP Logo" />
+    </div>
+    <div class="nav-center">
+      <h1>Training Menu</h1>
+    </div>
+    <div class="nav-right">
+      <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+    </div>
+  </nav>
+
+  <div class="container fade-in">
+    <h2>Select a Course</h2>
+    <p>Choose a training module to begin or continue your eCDP journey.</p>
+
+    <div class="course-grid" id="courseGrid"></div>
+
+    <button class="back-button" onclick="goBack()">
+      <span class="material-icons">arrow_back</span> Back to Main Menu
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <img src="../assets/images/mclogo.png" alt="McDonald's Logo" />
+    <span>eCDP Web Training Platform</span>
+  </footer>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" src="../assets/audio/BG_03.wav" loop autoplay></audio>
+
+  <script>
+    const courses = [
+      { key: "course_order-taking", name: "Order Taking", desc: "Learn to handle customer orders efficiently and accurately.", level: "beginner" },
+      { key: "course_kitchen-prep", name: "Kitchen Preparation", desc: "Understand how to prepare food safely and follow recipes.", level: "beginner" },
+      { key: "course_drive-thru", name: "Drive-Thru Service", desc: "Operate headsets, manage orders, and multitask effectively.", level: "intermediate" },
+      { key: "course_customer-service", name: "Customer Service", desc: "Maintain positive engagement and resolve issues politely.", level: "intermediate" },
+      { key: "course_register", name: "Register Operation", desc: "Manage transactions and handle payments confidently.", level: "intermediate" },
+      { key: "course_food-quality", name: "Food Quality & Safety", desc: "Maintain food standards and temperature control.", level: "advanced" },
+      { key: "course_teamwork", name: "Teamwork & Communication", desc: "Work efficiently with your crew under busy conditions.", level: "advanced" },
+      { key: "course_cleaning", name: "Restaurant Cleanliness", desc: "Follow cleaning routines and maintain hygiene standards.", level: "beginner" },
+      { key: "course_safety", name: "Health & Safety", desc: "Understand safety protocols and prevent workplace accidents.", level: "advanced" },
+      { key: "course_management", name: "Leadership & Management", desc: "Guide, train, and support your team effectively.", level: "experienced" }
+    ];
+
+    const courseGrid = document.getElementById("courseGrid");
+
+    courses.forEach(course => {
+      const completed = localStorage.getItem(course.key) === "completed";
+      const card = document.createElement("div");
+      card.classList.add("course-card");
+
+      if (completed) {
+        const check = document.createElement("span");
+        check.classList.add("material-icons", "completed");
+        check.textContent = "check_circle";
+        card.appendChild(check);
+      }
+
+      const badge = document.createElement("div");
+      badge.classList.add("level-badge", course.level);
+      badge.textContent = course.level.charAt(0).toUpperCase() + course.level.slice(1);
+      card.appendChild(badge);
+
+      const title = document.createElement("h3");
+      title.textContent = course.name;
+      card.appendChild(title);
+
+      const desc = document.createElement("p");
+      desc.textContent = course.desc;
+      card.appendChild(desc);
+
+      const btn = document.createElement("button");
+      btn.innerHTML = `<span class="material-icons">play_arrow</span> Start`;
+      btn.onclick = () => {
+        if (course.key === "course_order-taking") {
+          window.location.href = "./order-taking.html";
+        } else {
+          alert("This course is coming soon!");
+        }
+      };
+      card.appendChild(btn);
+
+      courseGrid.appendChild(card);
+    });
+
+    function goBack() {
+      window.location.href = "../mainMenu.html";
+    }
+
+    function adjustVolume(value) {
+      document.getElementById("bgMusic").volume = parseFloat(value);
+    }
+  </script>
+</body>
+</html>
