@@ -5,74 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Main Menu - eCDP Web</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <style>
-    /* === NAVBAR === */
+    /* NAVBAR */
     .navbar {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background: #1e4e91;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.6em 1.5em;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       z-index: 1000;
     }
 
-    .navbar .nav-left,
-    .navbar .nav-center,
-    .navbar .nav-right {
-      display: flex;
-      align-items: center;
-    }
-
-    .navbar .nav-left img {
+    .navbar img {
       max-height: 40px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 10px;
-      padding: 6px 12px;
+      filter: brightness(1.1);
     }
 
-    .navbar .nav-center h1 {
-      color: #1e4e91;
+    .navbar h1 {
+      color: #ffffff;
       font-size: 1.4em;
       font-family: 'Roboto', sans-serif;
       margin: 0;
-      text-align: center;
     }
 
-    .navbar .nav-right label {
+    .navbar label {
       display: inline-flex;
       align-items: center;
       gap: 0.3em;
-      color: #1e4e91;
+      color: #ffffff;
       font-weight: 500;
     }
 
     .navbar input[type="range"] {
       width: 140px;
-      accent-color: #1e4e91;
-      margin-left: 0.3em;
+      accent-color: #ffffff;
       cursor: pointer;
     }
 
-    /* === PAGE CONTAINER === */
-    .container {
+    /* MAIN CONTAINER */
+    .main-container {
       margin-top: 6em;
+      margin-bottom: 5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
-    /* === FOOTER === */
+    .welcome {
+      font-size: 1.3em;
+      color: #1e4e91;
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
+
+    /* PROGRESS BAR */
+    .progress-wrapper {
+      width: 80%;
+      max-width: 600px;
+      background: #f0f3f9;
+      border-radius: 8px;
+      padding: 0.5em;
+      margin-bottom: 1.5em;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 20px;
+      background-color: #1e4e91;
+      border-radius: 6px;
+      transition: width 0.5s ease;
+    }
+
+    .rank {
+      font-size: 1em;
+      color: #1e4e91;
+      margin-top: 0.5em;
+      font-weight: 500;
+    }
+
+    /* MENU BUTTONS */
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-btn {
+      background-color: #1e4e91;
+      color: white;
+      border: none;
+      padding: 0.8em 2em;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      transition: background-color 0.3s ease;
+      min-width: 220px;
+      justify-content: center;
+    }
+
+    .menu-btn:hover {
+      background-color: #163b6f;
+    }
+
+    /* FOOTER */
     footer {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      background: rgba(30, 78, 145, 0.92);
-      backdrop-filter: blur(5px);
+      background: #1e4e91;
       color: #fff;
       text-align: center;
       padding: 0.8em 0;
@@ -85,7 +141,6 @@
 
     footer img {
       max-height: 28px;
-      vertical-align: middle;
     }
 
     footer span {
@@ -95,7 +150,6 @@
   </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="nav-left">
       <img src="assets/images/logo.png" alt="eCDP Logo" />
@@ -105,101 +159,81 @@
     </div>
     <div class="nav-right">
       <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
-      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)" />
     </div>
   </nav>
 
-  <!-- Main Menu Content -->
-  <div class="container fade-in">
-    <h2>Welcome to eCDP Training</h2>
-    <p id="userInfo">Loading user info...</p>
+  <main class="main-container">
+    <div class="welcome" id="welcomeText">Welcome, <span id="userEmail">Loading...</span></div>
 
-    <div class="progress-container">
+    <div class="progress-wrapper">
       <div class="progress-bar" id="progressBar"></div>
     </div>
-    <div class="progress-info" id="progressInfo">Course Progress: 0% (Rank: D)</div>
+    <div class="rank">Rank: <span id="rank">Trainee</span></div>
 
     <div class="menu-buttons">
-      <button onclick="goToTraining()"><span class="material-icons">school</span> Start Training</button>
-      <button id="leaderboardBtn" onclick="goToLeaderboard()"><span class="material-icons">emoji_events</span> Leaderboards</button>
-      <button onclick="goToVideoGuide()"><span class="material-icons">movie</span> Video Guide</button>
-      <button id="logoutBtn" onclick="logout()"><span class="material-icons">logout</span> Logout</button>
+      <button class="menu-btn" onclick="goToTraining()">
+        <span class="material-icons">school</span> Start Training
+      </button>
+      <button class="menu-btn" onclick="goToLeaderboards()">
+        <span class="material-icons">emoji_events</span> Leaderboards
+      </button>
+      <button class="menu-btn" onclick="goToVideos()">
+        <span class="material-icons">play_circle_filled</span> Video Guide
+      </button>
+      <button class="menu-btn" onclick="logout()">
+        <span class="material-icons">logout</span> Log Out
+      </button>
     </div>
-  </div>
+  </main>
 
-  <!-- Footer -->
   <footer>
     <img src="assets/images/mclogo.png" alt="McDonald's Logo" />
     <span>eCDP Web Training Platform</span>
   </footer>
 
-  <!-- Background Music -->
   <audio id="bgMusic" src="assets/audio/BG_03.wav" loop autoplay></audio>
 
   <script>
-    // === PROGRESS + RANK LOGIC ===
     const totalCourses = 10;
-    const courseKeys = [
-      "course_order-taking", "course_kitchen-prep", "course_customer-service", "course_cleaning",
-      "course_drive-thru", "course_safety", "course_register", "course_food-quality",
-      "course_teamwork", "course_management"
-    ];
+    const completedCourses = Object.keys(localStorage)
+      .filter(k => k.startsWith("course_") && localStorage[k] === "completed").length;
 
-    let completedCount = courseKeys.filter(k => localStorage.getItem(k) === "completed").length;
-    let progress = Math.round((completedCount / totalCourses) * 100);
+    function updateProgress() {
+      const progressPercent = (completedCourses / totalCourses) * 100;
+      document.getElementById("progressBar").style.width = progressPercent + "%";
 
-    let rank = "D";
-    if (progress >= 100) rank = "S";
-    else if (progress >= 80) rank = "A";
-    else if (progress >= 60) rank = "B";
-    else if (progress >= 30) rank = "C";
+      let rank = "Trainee";
+      if (progressPercent >= 30) rank = "Crew Member";
+      if (progressPercent >= 60) rank = "A";
+      if (progressPercent >= 80) rank = "S";
+      if (progressPercent === 100) rank = "Master";
 
-    const progressBar = document.getElementById("progressBar");
-    const progressInfo = document.getElementById("progressInfo");
-    progressBar.style.width = progress + "%";
-    progressInfo.textContent = `Course Progress: ${progress}% (Rank: ${rank})`;
-
-    // === USER INFO / OFFLINE MODE ===
-    const userInfo = document.getElementById("userInfo");
-    const leaderboardBtn = document.getElementById("leaderboardBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    const userEmail = localStorage.getItem("ecdplogin_email");
-
-    if (userEmail) {
-      userInfo.textContent = `Welcome, ${userEmail} (${rank} Rank)`;
-      leaderboardBtn.disabled = false;
-      logoutBtn.textContent = "Logout";
-    } else {
-      userInfo.textContent = `Welcome, Trainee! (Rank: ${rank})`;
-      leaderboardBtn.disabled = true;
-      logoutBtn.textContent = "Offline Mode";
+      document.getElementById("rank").textContent = rank;
     }
 
-    // === NAVIGATION ===
     function goToTraining() {
       window.location.href = "modules/trainingMenu.html";
     }
 
-    function goToLeaderboard() {
-      if (!leaderboardBtn.disabled) {
-        window.location.href = "modules/leaderboard.html";
-      }
+    function goToLeaderboards() {
+      window.location.href = "modules/leaderboard.html";
     }
 
-    function goToVideoGuide() {
+    function goToVideos() {
       window.location.href = "modules/video-guides.html";
     }
 
     function logout() {
-      localStorage.removeItem("ecdplogin_email");
-      window.location.reload();
+      window.location.href = "index.html";
     }
 
-    // === VOLUME CONTROL ===
     function adjustVolume(value) {
       document.getElementById("bgMusic").volume = parseFloat(value);
     }
+
+    document.getElementById("welcomeText").innerHTML = "Welcome, <span id='userEmail'>Crew Member</span>";
+    updateProgress();
   </script>
 </body>
 </html>
