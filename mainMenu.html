@@ -54,7 +54,7 @@
       background: #f0f3f9;
       border-radius: 8px;
       padding: 0.5em;
-      margin-bottom: 1em;
+      margin-bottom: 0.4em;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
@@ -64,6 +64,13 @@
       background-color: #1e4e91;
       border-radius: 6px;
       transition: width 0.5s ease;
+    }
+
+    .progress-percent {
+      font-size: 0.95em;
+      color: #1e4e91;
+      font-weight: 600;
+      margin-bottom: 1em;
     }
 
     .rank {
@@ -95,7 +102,7 @@
       align-items: center;
       gap: 0.6em;
       transition: background-color 0.3s ease, transform 0.1s ease;
-      min-width: 220px;
+      min-width: 250px;
       justify-content: center;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     }
@@ -148,6 +155,7 @@
     <div class="progress-wrapper">
       <div class="progress-bar" id="progressBar"></div>
     </div>
+    <div class="progress-percent" id="progressPercent">0% Complete</div>
     <div class="rank">Rank: <span id="rank">Trainee</span></div>
 
     <div class="menu-buttons">
@@ -156,6 +164,9 @@
       </button>
       <button class="menu-btn" onclick="goToVideos()">
         <span class="material-icons">play_circle_filled</span> Video Guides
+      </button>
+      <button class="menu-btn" onclick="goToChallenge()">
+        <span class="material-icons">emoji_events</span> The McDonald's Challenge
       </button>
       <button class="menu-btn" onclick="logout()">
         <span class="material-icons">logout</span> Log Out
@@ -176,8 +187,13 @@
       .filter(k => k.startsWith("course_") && localStorage[k] === "completed").length;
 
     function updateProgress() {
-      const progressPercent = (completedCourses / totalCourses) * 100;
-      document.getElementById("progressBar").style.width = progressPercent + "%";
+      const progressPercent = Math.round((completedCourses / totalCourses) * 100);
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressPercent");
+      const rankText = document.getElementById("rank");
+
+      progressBar.style.width = progressPercent + "%";
+      progressText.textContent = progressPercent + "% Complete";
 
       let rank = "Trainee";
       if (progressPercent >= 30) rank = "Crew Member";
@@ -185,7 +201,7 @@
       if (progressPercent >= 80) rank = "S";
       if (progressPercent === 100) rank = "Master";
 
-      document.getElementById("rank").textContent = rank;
+      rankText.textContent = rank;
     }
 
     function goToTraining() {
@@ -194,6 +210,10 @@
 
     function goToVideos() {
       window.location.href = "modules/video-guides.html";
+    }
+
+    function goToChallenge() {
+      window.location.href = "modules/mcd-challenge.html";
     }
 
     function logout() {
