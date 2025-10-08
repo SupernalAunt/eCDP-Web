@@ -1,24 +1,28 @@
-/* -------------------------------------
-   eCDP-Web Global Style (Blue Theme)
-   Updated for static background + new logo
--------------------------------------- */
+/* =======================================================
+   eCDP Web - Global Stylesheet
+   Clean Corporate Blue/White Theme
+   ======================================================= */
 
-/* Google Fonts (used globally) */
+/* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap');
 
-/* -----------------------------
-   GLOBAL LAYOUT
------------------------------ */
+/* -------------------------------------------------------
+   GLOBAL BODY + BACKGROUND
+-------------------------------------------------------- */
 body {
   font-family: 'Open Sans', sans-serif;
-  background: url("../assets/images/background.png") no-repeat center center fixed;
-  background-size: cover;
+  background: linear-gradient(135deg, #dce6f5 0%, #b4caea 50%, #89aede 100%);
   margin: 0;
   padding: 0;
   color: #1c1c1c;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Container styling (white card layout) */
+/* -------------------------------------------------------
+   UNIVERSAL CONTAINER STYLE
+-------------------------------------------------------- */
 .container {
   max-width: 960px;
   margin: 3em auto;
@@ -29,14 +33,25 @@ body {
   backdrop-filter: blur(4px);
 }
 
-/* Logo styling */
+/* -------------------------------------------------------
+   LOGOS
+-------------------------------------------------------- */
 .logo {
   display: block;
   margin: 0 auto 1.5em;
   max-width: 140px;
 }
 
-/* Headings */
+.logo-bg {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 12px 20px;
+  border-radius: 12px;
+}
+
+/* -------------------------------------------------------
+   HEADINGS & PARAGRAPHS
+-------------------------------------------------------- */
 h1, h2, h3 {
   text-align: center;
   font-family: 'Roboto', sans-serif;
@@ -51,9 +66,9 @@ p {
   color: #333;
 }
 
-/* -----------------------------
-   INPUTS & FORM FIELDS
------------------------------ */
+/* -------------------------------------------------------
+   INPUTS & FORMS
+-------------------------------------------------------- */
 input[type="email"],
 input[type="password"],
 input[type="text"],
@@ -77,9 +92,9 @@ select:focus {
   box-shadow: 0 0 6px rgba(30, 78, 145, 0.3);
 }
 
-/* -----------------------------
+/* -------------------------------------------------------
    BUTTONS
------------------------------ */
+-------------------------------------------------------- */
 button {
   display: inline-flex;
   align-items: center;
@@ -109,28 +124,16 @@ button .material-icons {
   vertical-align: middle;
 }
 
-/* -----------------------------
-   NAVIGATION
------------------------------ */
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1em;
-  margin-top: 2em;
+/* Disabled buttons */
+button[disabled] {
+  background-color: #aab8cf !important;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-/* -----------------------------
-   QUIZ & INTERACTIVE MODULES
------------------------------ */
-#ingredientTray,
-#burgerStack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 1em auto;
-}
-
+/* -------------------------------------------------------
+   QUIZ & TRAINING ELEMENTS
+-------------------------------------------------------- */
 .ingredient {
   padding: 10px;
   margin: 6px;
@@ -160,9 +163,9 @@ nav {
   border-radius: 6px;
 }
 
-/* -----------------------------
-   FEEDBACK & STATUS TEXT
------------------------------ */
+/* -------------------------------------------------------
+   FEEDBACK MESSAGES
+-------------------------------------------------------- */
 .happy {
   color: #0c7b2b;
   font-size: 1.2em;
@@ -183,32 +186,11 @@ nav {
   vertical-align: middle;
 }
 
-/* -----------------------------
-   MISC COMPONENTS
------------------------------ */
-#hintArea {
-  margin-top: 1em;
-  padding: 1em;
-  background: rgba(244, 247, 251, 0.95);
-  border: 1px solid #cbd6e2;
-  border-radius: 6px;
-}
-
-/* -----------------------------
-   VOLUME CONTROL
------------------------------ */
-input[type="range"] {
-  width: 160px;
-  margin-top: 0.5em;
-  accent-color: #1e4e91;
-  cursor: pointer;
-}
-
-/* -----------------------------
+/* -------------------------------------------------------
    FOOTER
------------------------------ */
+-------------------------------------------------------- */
 footer {
-  margin-top: 3em;
+  margin-top: auto;
   padding: 1em;
   text-align: center;
   background-color: rgba(30, 78, 145, 0.9);
@@ -228,9 +210,18 @@ footer span {
   color: #e4eaf2;
 }
 
-/* -----------------------------
+/* -------------------------------------------------------
+   VOLUME CONTROL
+-------------------------------------------------------- */
+input[type="range"] {
+  width: 160px;
+  accent-color: #1e4e91;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------------
    RESPONSIVE DESIGN
------------------------------ */
+-------------------------------------------------------- */
 @media (max-width: 600px) {
   .container {
     margin: 2em auto;
