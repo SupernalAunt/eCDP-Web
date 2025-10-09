@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Order Taking Quiz - eCDP Web</title>
   <link rel="stylesheet" href="../style.css" />
@@ -17,18 +17,18 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       z-index: 1000;
     }
-    .navbar img { max-height: 40px; filter: brightness(1.1); }
-    .navbar h1 { color: #fff; font-size: 1.4em; font-family: 'Roboto', sans-serif; margin: 0; }
+    .navbar img { max-height: 40px; }
+    .navbar h1 { color: #fff; font-size: 1.4em; font-family: 'Segoe UI', sans-serif; margin: 0; }
     .navbar label { display: inline-flex; align-items: center; gap: 0.3em; color: #fff; font-weight: 500; }
     .navbar input[type="range"] { width: 140px; accent-color: #fff; cursor: pointer; }
 
-    /* LAYOUT */
+    /* BODY + QUIZ CARD */
     body {
       background: linear-gradient(180deg, #eaf0f9 0%, #ffffff 100%);
       font-family: 'Segoe UI', sans-serif;
       display: flex; flex-direction: column; align-items: center;
       justify-content: center;
-      height: 100vh; margin: 0;
+      min-height: 100vh; margin: 0;
       color: #1c1c1c;
     }
 
@@ -37,51 +37,98 @@
       background: #ffffff;
       border-radius: 18px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      padding: 2.5em;
-      width: 650px;
-      max-width: 90%;
+      padding: 1.8em;
+      width: 760px;
+      max-width: 96%;
+      min-height: 560px;
+      max-height: calc(100vh - 160px);
       text-align: center;
       position: relative;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     /* PROGRESS BAR */
     .progress-wrapper {
       background: #f0f3f9;
       border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 1.5em;
-      height: 16px;
+      overflow: visible;
+      margin-bottom: 0.8em;
+      height: 18px;
       width: 100%;
     }
     .progress-bar {
-      height: 16px;
+      height: 18px;
       background: #1e4e91;
       width: 0%;
-      transition: width 0.4s ease;
+      transition: width 0.35s ease;
     }
 
-    /* QUESTION AREA */
-    .question-number { font-weight: 600; color: #1e4e91; margin-bottom: 0.5em; }
-    .question { font-size: 1.2em; font-weight: 500; color: #1a1a1a; margin-bottom: 1.5em; }
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 0.6em;
+      gap: 1rem;
+    }
+    .question-number { font-weight: 700; color: #1e4e91; font-size: 1.05em; }
+    .session-info { color: #555; font-size: 0.95em; }
+
+    .main-area {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      flex: 1 1 auto;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 1rem;
+      overflow: hidden;
+    }
+
+    .question {
+      font-size: 1.18em;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.2em;
+      text-align: left;
+    }
 
     .options {
-      display: flex; flex-direction: column; gap: 0.8em; margin-bottom: 1.5em;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7em;
+      margin-top: 0.3em;
+      flex-shrink: 0;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 6px;
     }
-    .option {
+
+    button.option {
       background: #f7f9fc;
       border: 2px solid #d0dae6;
       border-radius: 10px;
-      padding: 0.8em 1em;
+      padding: 0.85em 1em;
       cursor: pointer;
       text-align: left;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       font-size: 1em;
       color: #1c1c1c;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
     }
-    .option:hover { background: #e7edf6; border-color: #1e4e91; }
-    .option.correct { background: #d8f5e1; border-color: #28a745; }
-    .option.incorrect { background: #f8d7da; border-color: #dc3545; }
+    button.option:hover { background: #e7edf6; border-color: #1e4e91; }
+
+    button.option.correct { background: #d8f5e1; border-color: #28a745; }
+    button.option.incorrect { background: #f8d7da; border-color: #dc3545; }
+
+    .option strong { min-width: 2.2em; display: inline-block; color: #1e4e91; }
 
     .explanation {
       display: none;
@@ -91,23 +138,52 @@
       color: #333;
       font-size: 0.95em;
       text-align: left;
-      margin-top: 1em;
+      margin-top: 0.6em;
+      max-height: 140px;
+      overflow-y: auto;
+      box-sizing: border-box;
     }
 
-    .next-btn {
-      display: none;
+    .controls {
+      display:flex;
+      gap: 0.8em;
+      justify-content: center;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 0.6rem;
+    }
+
+    button.next-btn {
+      display: inline-block;
       background: #1e4e91;
       color: white;
       border: none;
-      padding: 0.8em 1.8em;
-      border-radius: 10px;
+      padding: 0.7em 1.4em;
+      border-radius: 8px;
       font-size: 1em;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background 0.25s ease;
     }
-    .next-btn:hover { background: #163b6f; }
+    button.next-btn:hover { background: #163b6f; }
 
-    /* FOOTER */
+    .results-panel {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 86%;
+      background: rgba(255,255,255,0.98);
+      border-radius: 12px;
+      box-shadow: 0 8px 26px rgba(0,0,0,0.16);
+      padding: 1.6rem;
+      display: none;
+      z-index: 40;
+      text-align: center;
+    }
+    .results-panel h2 { color: #1e4e91; margin-bottom: 0.5rem; }
+    .results-panel p { color: #333; margin-bottom: 1rem; }
+    .results-actions { display:flex; gap: 0.8rem; justify-content: center; flex-wrap:wrap; }
+
     footer {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -117,30 +193,32 @@
       padding: 0.8em 0;
       display: flex; justify-content: center; align-items: center;
       gap: 0.6em;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
     }
     footer img { max-height: 28px; }
     footer span { font-size: 0.95em; color: #e4eaf2; }
 
-    /* ANIMATIONS */
-    .slide-in { animation: slideIn 0.4s ease forwards; }
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+    .slide-in { animation: slideIn 0.38s ease both; }
+    @keyframes slideIn { from { transform: translateX(22px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    @media (max-width: 820px) {
+      .quiz-container { min-height: 0; height: auto; padding: 1.1em; margin-top: 5.6em; max-height: none; }
+      .options { max-height: 260px; }
+      .explanation { max-height: 200px; }
     }
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="nav-left">
-      <img src="../assets/images/logo.png" alt="eCDP Logo">
+      <img src="../assets/images/logo.png" alt="eCDP Logo" />
     </div>
     <div class="nav-center">
       <h1>Order Taking Quiz</h1>
     </div>
     <div class="nav-right">
       <label for="volume"><span class="material-icons">volume_up</span> Volume:</label>
-      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)">
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume(this.value)" />
     </div>
   </nav>
 
@@ -148,11 +226,32 @@
     <div class="progress-wrapper">
       <div class="progress-bar" id="progressBar"></div>
     </div>
-    <div class="question-number" id="questionNumber"></div>
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsContainer"></div>
-    <div class="explanation" id="explanation"></div>
-    <button class="next-btn" id="nextButton" onclick="nextQuestion()">Next</button>
+
+    <div class="top-row">
+      <div class="question-number" id="questionNumber">Q1 of 20</div>
+      <div class="session-info" id="sessionInfo">Score: 0</div>
+    </div>
+
+    <div class="main-area">
+      <div id="questionArea">
+        <div class="question" id="questionText">Loading questions...</div>
+        <div class="options" id="optionsContainer"></div>
+        <div class="explanation" id="explanation"></div>
+      </div>
+
+      <div class="controls">
+        <button class="next-btn" id="nextButton" onclick="nextQuestion()">Next Question</button>
+      </div>
+    </div>
+
+    <div class="results-panel" id="resultsPanel">
+      <h2>Your Results</h2>
+      <p id="resultsSummary">You scored X out of Y.</p>
+      <div class="results-actions">
+        <button class="next-btn" id="retryBtn" onclick="retryIncorrect()">Retry Incorrect</button>
+        <button class="next-btn" id="backBtn" onclick="goToMenu()">Back to Menu</button>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -164,95 +263,114 @@
 
   <script>
     let allQuestions = [];
+    let questionSet = [];
     let currentIndex = 0;
     let score = 0;
+    let incorrect = [];
+
+    const qNumberEl = document.getElementById('questionNumber');
+    const qTextEl = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const explanationEl = document.getElementById('explanation');
+    const nextButton = document.getElementById('nextButton');
+    const progressBar = document.getElementById('progressBar');
+    const sessionInfo = document.getElementById('sessionInfo');
+    const resultsPanel = document.getElementById('resultsPanel');
+    const resultsSummary = document.getElementById('resultsSummary');
+    const retryBtn = document.getElementById('retryBtn');
+
+    function shuffleArray(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
     async function loadQuestions() {
-      const res = await fetch("order-taking.json");
+      const res = await fetch('./order-taking.json');
       allQuestions = await res.json();
-      allQuestions = shuffleArray(allQuestions); // Randomize question order
+      questionSet = shuffleArray(allQuestions);
+      currentIndex = 0; score = 0; incorrect = [];
+      updateSessionInfo();
       loadQuestion();
     }
 
-    function shuffleArray(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
+    function updateSessionInfo() { sessionInfo.textContent = `Score: ${score}`; }
 
     function loadQuestion() {
-      const q = allQuestions[currentIndex];
-      const qNum = document.getElementById("questionNumber");
-      const qText = document.getElementById("questionText");
-      const optionsContainer = document.getElementById("optionsContainer");
-      const progressBar = document.getElementById("progressBar");
-      const explanation = document.getElementById("explanation");
-      const nextButton = document.getElementById("nextButton");
+      resultsPanel.style.display = 'none';
+      const q = questionSet[currentIndex];
+      qNumberEl.textContent = `Q${currentIndex + 1} of ${questionSet.length}`;
+      qTextEl.textContent = q.question;
+      explanationEl.style.display = 'none';
+      nextButton.style.display = 'none';
+      optionsContainer.innerHTML = '';
 
-      qNum.textContent = `Question ${currentIndex + 1} of ${allQuestions.length}`;
-      qText.textContent = q.question;
-      explanation.style.display = "none";
-      nextButton.style.display = "none";
-      optionsContainer.innerHTML = "";
+      const labels = ['A', 'B', 'C', 'D'];
+      const optionObjs = q.options.map((text, i) => ({ text, i }));
+      const shuffled = shuffleArray(optionObjs);
 
-      // Shuffle options
-      const labels = ["A", "B", "C", "D"];
-      const shuffledOptions = shuffleArray(q.options.map((o, i) => ({ label: labels[i], text: o, index: i })));
-
-      shuffledOptions.forEach(opt => {
-        const btn = document.createElement("div");
-        btn.classList.add("option");
-        btn.innerHTML = `<strong>${opt.label})</strong> ${opt.text}`;
-        btn.onclick = () => selectAnswer(opt.index, q.answer, q.explanation, btn);
+      shuffled.forEach((opt, pos) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.type = 'button';
+        btn.dataset.orig = opt.i;
+        btn.innerHTML = `<strong>${labels[pos]})</strong> ${opt.text}`;
+        btn.onclick = () => handleAnswer(btn, opt.i, q.answer, q.explanation);
         optionsContainer.appendChild(btn);
       });
 
-      progressBar.style.width = ((currentIndex) / allQuestions.length) * 100 + "%";
-      qText.classList.add("slide-in");
-      setTimeout(() => qText.classList.remove("slide-in"), 400);
+      const pct = Math.round((currentIndex / questionSet.length) * 100);
+      progressBar.style.width = pct + '%';
     }
 
-    function selectAnswer(selected, correct, explanationText, element) {
-      const options = document.querySelectorAll(".option");
-      options.forEach(o => o.style.pointerEvents = "none");
-
+    function handleAnswer(btn, selected, correct, exp) {
+      const opts = document.querySelectorAll('.option');
+      opts.forEach(b => b.disabled = true);
+      const correctBtn = document.querySelector(`.option[data-orig="${correct}"]`);
       if (selected === correct) {
-        element.classList.add("correct");
+        btn.classList.add('correct');
         score++;
       } else {
-        element.classList.add("incorrect");
+        btn.classList.add('incorrect');
+        if (correctBtn) correctBtn.classList.add('correct');
+        incorrect.push(questionSet[currentIndex]);
       }
-
-      const explanation = document.getElementById("explanation");
-      explanation.textContent = explanationText;
-      explanation.style.display = "block";
-      document.getElementById("nextButton").style.display = "inline-block";
-
-      document.getElementById("progressBar").style.width = ((currentIndex + 1) / allQuestions.length) * 100 + "%";
+      explanationEl.textContent = exp;
+      explanationEl.style.display = 'block';
+      nextButton.style.display = 'inline-block';
+      updateSessionInfo();
+      const pct = Math.round(((currentIndex + 1) / questionSet.length) * 100);
+      progressBar.style.width = pct + '%';
+      nextButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function nextQuestion() {
       currentIndex++;
-      if (currentIndex < allQuestions.length) {
-        loadQuestion();
-      } else {
-        showResults();
-      }
+      if (currentIndex < questionSet.length) loadQuestion();
+      else showResults();
     }
 
     function showResults() {
-      document.getElementById("quizContainer").innerHTML = `
-        <h2>Your Results</h2>
-        <p>You scored ${score} out of ${allQuestions.length}.</p>
-        <button class='next-btn' onclick='goToMenu()'>Back to Main Menu</button>
-      `;
+      localStorage.setItem('course_order-taking', 'completed');
+      resultsSummary.textContent = `You scored ${score} out of ${questionSet.length}.`;
+      resultsPanel.style.display = 'block';
+      retryBtn.disabled = incorrect.length === 0;
     }
 
-    function goToMenu() {
-      window.location.href = "../mainMenu.html";
+    function retryIncorrect() {
+      if (incorrect.length === 0) return;
+      questionSet = shuffleArray(incorrect.slice());
+      incorrect = [];
+      currentIndex = 0; score = 0;
+      updateSessionInfo();
+      loadQuestion();
     }
 
-    function adjustVolume(value) {
-      document.getElementById("bgMusic").volume = parseFloat(value);
-    }
+    function goToMenu() { window.location.href = '../mainMenu.html'; }
+    function adjustVolume(v) { document.getElementById('bgMusic').volume = parseFloat(v); }
 
     loadQuestions();
   </script>
