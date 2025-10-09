@@ -2,20 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>eCDP Web Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eCDP Web - Login</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(180deg, #1e4e91 0%, #0d2d5d 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      width: 380px;
+      max-width: 90%;
+      padding: 2em 2.5em;
+      text-align: center;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .login-card img {
+      width: 120px;
+      margin-bottom: 1em;
+    }
+
+    h2 {
+      color: #1e4e91;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 1.5em;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.75em;
+      margin-bottom: 1em;
+      border: 1px solid #cbd6e2;
+      border-radius: 6px;
+      font-size: 1em;
+      background-color: #f7f9fc;
+      color: #1c1c1c;
+      box-sizing: border-box;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #1e4e91;
+    }
+
+    .login-btn {
+      background: #1e4e91;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75em 2em;
+      font-size: 1em;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+      margin-bottom: 1em;
+    }
+
+    .login-btn:hover {
+      background: #163b6f;
+    }
+
+    .register-btn {
+      background: #eaf0f9;
+      color: #1e4e91;
+      border: 2px solid #1e4e91;
+      border-radius: 8px;
+      padding: 0.75em 2em;
+      font-size: 1em;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .register-btn:hover {
+      background: #1e4e91;
+      color: #fff;
+    }
+
+    .message {
+      font-size: 0.95em;
+      margin-top: 0.5em;
+      display: none;
+    }
+
+    .error {
+      color: #d32f2f;
+    }
+
+    .success {
+      color: #388e3c;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #0d2d5d;
+      color: #fff;
+      text-align: center;
+      padding: 0.8em 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6em;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    footer img {
+      max-height: 28px;
+    }
+
+    footer span {
+      font-size: 0.9em;
+      color: #e4eaf2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <img src="assets/images/logo.png" alt="eCDP Logo" class="logo" />
-    <h1>Welcome to eCDP Web</h1>
-    <p>Please log in or register to begin your training</p>
+  <div class="login-card">
+    <img src="assets/images/logo_blue.png" alt="eCDP Logo" />
+    <h2>Welcome to eCDP Web</h2>
+    <p>Sign in to begin your McDonald's training</p>
 
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
+    <input type="email" id="email" placeholder="Email address" />
+    
+    <div class="password-wrapper">
+      <input type="password" id="password" placeholder="Password / PIN" />
+      <button class="toggle-password" type="button" onclick="togglePassword()">
+        <span class="material-icons" id="eyeIcon">visibility_off</span>
+      </button>
+    </div>
+
+    <button class="login-btn" onclick="login()">Login</button>
+    <button class="register-btn" onclick="register()">Register</button>
+
+    <div class="message error" id="errorMsg"></div>
+    <div class="message success" id="successMsg"></div>
   </div>
 
   <footer>
@@ -23,42 +178,53 @@
     <span>eCDP Web Training Platform</span>
   </footer>
 
-  <script type="module">
-    import { auth } from './firebase.js';
-    import {
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
+  <audio id="bgMusic" src="assets/audio/BG_03.wav" loop autoplay></audio>
 
-    const login = () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+  <script src="firebase.js"></script>
+  <script>
+    const errorMsg = document.getElementById("errorMsg");
+    const successMsg = document.getElementById("successMsg");
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then(user => {
-          sessionStorage.setItem('ecdpUser', user.user.email);
-          window.location.href = "mainMenu.html";
-        })
-        .catch(error => {
-          alert("Login failed: " + error.message);
-        });
-    };
+    function showMessage(element, text) {
+      element.textContent = text;
+      element.style.display = "block";
+      setTimeout(() => { element.style.display = "none"; }, 4000);
+    }
 
-    const register = () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+    function togglePassword() {
+      const passwordField = document.getElementById("password");
+      const eyeIcon = document.getElementById("eyeIcon");
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eyeIcon.textContent = "visibility";
+      } else {
+        passwordField.type = "password";
+        eyeIcon.textContent = "visibility_off";
+      }
+    }
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(user => {
-          alert("Registration successful! You can now log in.");
-        })
-        .catch(error => {
-          alert("Registration failed: " + error.message);
-        });
-    };
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-    window.login = login;
-    window.register = register;
+      if (!email || !password) {
+        showMessage(errorMsg, "Please fill in both fields.");
+        return;
+      }
+
+      showMessage(successMsg, "Logging in...");
+      try {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+        showMessage(successMsg, "Login successful!");
+        setTimeout(() => { window.location.href = "mainMenu.html"; }, 1000);
+      } catch (error) {
+        showMessage(errorMsg, "Invalid credentials or login failed.");
+      }
+    }
+
+    function register() {
+      window.location.href = "register.html";
+    }
   </script>
 </body>
 </html>
