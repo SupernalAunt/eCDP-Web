@@ -72,9 +72,7 @@
       color: #1e4e91;
     }
 
-    .login-btn {
-      background: #1e4e91;
-      color: #fff;
+    .login-btn, .register-btn {
       border: none;
       border-radius: 8px;
       padding: 0.75em 2em;
@@ -85,20 +83,17 @@
       margin-bottom: 1em;
     }
 
-    .login-btn:hover {
-      background: #163b6f;
+    .login-btn {
+      background: #1e4e91;
+      color: #fff;
     }
+
+    .login-btn:hover { background: #163b6f; }
 
     .register-btn {
       background: #eaf0f9;
       color: #1e4e91;
       border: 2px solid #1e4e91;
-      border-radius: 8px;
-      padding: 0.75em 2em;
-      font-size: 1em;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .register-btn:hover {
@@ -112,19 +107,12 @@
       display: none;
     }
 
-    .error {
-      color: #d32f2f;
-    }
-
-    .success {
-      color: #388e3c;
-    }
+    .error { color: #d32f2f; }
+    .success { color: #388e3c; }
 
     footer {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
+      bottom: 0; left: 0; width: 100%;
       background: #0d2d5d;
       color: #fff;
       text-align: center;
@@ -136,14 +124,8 @@
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
     }
 
-    footer img {
-      max-height: 28px;
-    }
-
-    footer span {
-      font-size: 0.9em;
-      color: #e4eaf2;
-    }
+    footer img { max-height: 28px; }
+    footer span { font-size: 0.9em; color: #e4eaf2; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
@@ -158,7 +140,7 @@
     <p>Sign in to begin your McDonald's training</p>
 
     <input type="email" id="email" placeholder="Email address" />
-    
+
     <div class="password-wrapper">
       <input type="password" id="password" placeholder="Password / PIN" />
       <button class="toggle-password" type="button" onclick="togglePassword()">
@@ -166,8 +148,8 @@
       </button>
     </div>
 
-    <button class="login-btn" onclick="login()">Login</button>
-    <button class="register-btn" onclick="register()">Register</button>
+    <button class="login-btn" id="loginBtn">Login</button>
+    <button class="register-btn" id="registerBtn">Register</button>
 
     <div class="message error" id="errorMsg"></div>
     <div class="message success" id="successMsg"></div>
@@ -180,19 +162,53 @@
 
   <audio id="bgMusic" src="assets/audio/BG_03.wav" loop autoplay></audio>
 
-  <script src="firebase.js"></script>
-  <script>
+  <script type="module">
+    import { auth } from './firebase.js';
+    import {
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
+
     const errorMsg = document.getElementById("errorMsg");
     const successMsg = document.getElementById("successMsg");
+    const emailField = document.getElementById("email");
+    const passwordField = document.getElementById("password");
 
-    function showMessage(element, text) {
-      element.textContent = text;
-      element.style.display = "block";
-      setTimeout(() => { element.style.display = "none"; }, 4000);
-    }
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+
+    loginBtn.addEventListener("click", async () => {
+      clearMessages();
+      const email = emailField.value.trim();
+      const password = passwordField.value.trim();
+
+      if (!email || !password) return showError("Please fill in both fields.");
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showSuccess("Login successful!");
+        setTimeout(() => (window.location.href = "mainMenu.html"), 1000);
+      } catch (error) {
+        showError("Invalid email or password.");
+      }
+    });
+
+    registerBtn.addEventListener("click", async () => {
+      clearMessages();
+      const email = emailField.value.trim();
+      const password = passwordField.value.trim();
+
+      if (!email || !password) return showError("Please fill in both fields.");
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        showSuccess("Account created successfully! You can now log in.");
+      } catch (error) {
+        showError("Registration failed. Please try again.");
+      }
+    });
 
     function togglePassword() {
-      const passwordField = document.getElementById("password");
       const eyeIcon = document.getElementById("eyeIcon");
       if (passwordField.type === "password") {
         passwordField.type = "text";
@@ -203,27 +219,19 @@
       }
     }
 
-    async function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      if (!email || !password) {
-        showMessage(errorMsg, "Please fill in both fields.");
-        return;
-      }
-
-      showMessage(successMsg, "Logging in...");
-      try {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
-        showMessage(successMsg, "Login successful!");
-        setTimeout(() => { window.location.href = "mainMenu.html"; }, 1000);
-      } catch (error) {
-        showMessage(errorMsg, "Invalid credentials or login failed.");
-      }
+    function showError(message) {
+      errorMsg.textContent = message;
+      errorMsg.style.display = "block";
     }
 
-    function register() {
-      window.location.href = "register.html";
+    function showSuccess(message) {
+      successMsg.textContent = message;
+      successMsg.style.display = "block";
+    }
+
+    function clearMessages() {
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
     }
   </script>
 </body>
