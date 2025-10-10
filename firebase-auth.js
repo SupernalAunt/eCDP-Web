@@ -1,7 +1,7 @@
-// firebase-auth.js
+// firebase-auth.js (UPDATED for Role Handling)
 
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
-import { auth } from "./firebase-config.js"; // Import the initialized auth object
+import { auth } from "./firebase-config.js"; 
 
 const loginForm = document.getElementById('loginForm');
 const emailInput = document.getElementById('email');
@@ -22,14 +22,22 @@ if (loginForm) {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             
-            // --- SUCCESS: Handle successful login ---
             console.log("User logged in successfully:", user.uid);
             
-            // IMPORTANT: Redirect to the main dashboard page
-            window.location.href = "dashboard.html"; // We will create this file next!
+            // 1. Determine User Role
+            let role = 'employee';
+            if (user.email === 'management@ecdp-web.firebaseapp.com') {
+                role = 'manager';
+            }
+
+            // 2. Save role and email to local storage (or a cookie) for use on the dashboard
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userRole', role);
+            
+            // 3. Redirect to the main dashboard page
+            window.location.href = "dashboard.html"; 
 
         } catch (error) {
-            // --- ERROR: Handle errors (e.g., wrong password, user not found) ---
             const errorCode = error.code;
             let friendlyMessage = "Login failed. Please check your credentials.";
 
