@@ -1,0 +1,147 @@
+/* --- 1. BRAND COLORS AND FONT VARIABLES (MODERN BLUE) --- */
+:root {
+    --primary-blue: #003366; /* Professional Navy Blue */
+    --accent-teal: #0099CC; /* Bright Sky Blue / Teal */
+    --text-dark: #333333; /* Dark Gray for high contrast */
+    --background-light: #F4F7F9; /* Very Light Gray Body */
+    --card-white: #FFFFFF; /* Pure white for login card */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --poppins: 'Poppins', sans-serif;
+}
+
+/* --- 2. GLOBAL STYLES --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--poppins);
+    background-color: var(--background-light); /* Light gray background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.logo {
+    max-width: 100px; /* Adjust size as needed */
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* --- 3. LOGIN CARD STYLING --- */
+.login-container {
+    background-color: var(--card-white);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.login-header h1 {
+    font-size: 2.2rem;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.login-header .accent {
+    color: var(--accent-teal); /* Teal accent */
+    font-weight: 700;
+}
+
+.login-header p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+/* --- 4. FORM AND INPUTS --- */
+.login-form h2 {
+    font-size: 1.4rem;
+    color: var(--primary-blue);
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.2); /* Soft focus ring */
+    outline: none;
+}
+
+/* --- 5. BUTTON STYLING --- */
+.primary-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-blue); /* Navy Blue Button */
+    color: var(--card-white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    margin-top: 10px;
+}
+
+.primary-btn:hover {
+    background-color: #004488; /* Slightly darker blue on hover */
+}
+
+.primary-btn:active {
+    transform: scale(0.99);
+}
+
+/* --- 6. MISC LINKS AND MESSAGES --- */
+.signup-link {
+    margin-top: 20px;
+    color: #666;
+}
+
+.signup-link a {
+    color: var(--accent-teal);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.signup-link a:hover {
+    color: var(--primary-blue);
+    text-decoration: underline;
+}
+
+.error-message {
+    color: var(--primary-red); /* Keeping red for error warnings */
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-height: 18px; 
+}
