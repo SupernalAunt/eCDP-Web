@@ -1,10 +1,9 @@
-// firebase-config.js
+// firebase-config.js (UPDATED with Firestore)
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
-
+// ⚠️ We are using the COMPAT SDK links for stability
 const firebaseConfig = {
-    apiKey: "AIzaSyAOwtZ9hlq2tjh-wHyBtEF5gFpMMZQl0so",
+    // ⚠️ ENSURE YOUR API KEY IS CORRECT HERE
+    apiKey: "AIzaSyAOwtZ9hlq2tjh-wHyBtEF5gFpMMZQl0so", 
     authDomain: "ecdp-web.firebaseapp.com",
     projectId: "ecdp-web",
     storageBucket: "ecdp-web.firebasestorage.app",
@@ -13,11 +12,17 @@ const firebaseConfig = {
     measurementId: "G-6GP618SEYW"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase App
+const app = firebase.initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
+// Initialize Firebase Auth and Firestore using the global compat namespace
+const auth = firebase.auth();
 
-// Export the auth object for use in other JS modules
-export { auth };
+// ⚠️ NEW: Initialize Firestore
+const db = firebase.firestore(); 
+
+// Export the necessary objects
+// NOTE: Since this file uses the compat SDKs and is loaded globally, 
+// other files will access auth/db via the global 'firebase.auth()' and 'firebase.firestore()' 
+// or by just using the exported 'auth' and 'db' variables if they are set up as modules.
+// For now, let's ensure they are available globally via the compat approach.
