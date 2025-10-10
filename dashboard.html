@@ -37,33 +37,29 @@
 
         <main class="main-content">
             <h1>Welcome to Your Dashboard!</h1>
-            <p style="color: var(--light-blue); font-size: 1.1em;">Your next steps and mandatory training modules are listed below. Click to start a course.</p>
+            <p style="color: var(--light-blue); font-size: 1.1em;">Choose a **Learning Path Category** below to start or continue your training.</p>
 
             <div class="dashboard-grid">
                 
-                <div class="dashboard-card" id="course-FoodSafety101">
-                    <i class="fas fa-burger fa-3x" style="color: var(--deep-blue); margin-bottom: 15px;"></i>
-                    <h3>Food Safety 101</h3>
-                    <p>Mandatory training for all new crew members. Covers HACCP, storage, and cross-contamination.</p>
-                    
-                    <span class="status-indicator new" id="status-FoodSafety101">New Module</span> 
-                    
-                    <button class="action-button" id="complete-FoodSafety101" data-course-id="FoodSafety101" style="background-color: var(--deep-blue); margin-top: 15px;">
-                        Mark as Complete
-                    </button>
+                <div class="dashboard-card category-card" onclick="window.location.href='course-list.html?category=Operations';">
+                    <i class="fas fa-cogs fa-3x" style="color: var(--deep-blue); margin-bottom: 15px;"></i>
+                    <h3>Core Operations</h3>
+                    <p>Essential modules on kitchen procedures, safety, and efficiency standards.</p>
+                    <span class="status-indicator new">3 Required Courses</span>
                 </div>
-                <div class="dashboard-card" onclick="alert('Continuing Drive-Thru Operations...');">
-                    <i class="fas fa-car-side fa-3x" style="color: var(--medium-blue); margin-bottom: 15px;"></i>
-                    <h3>Drive-Thru Operations</h3>
-                    <p>Learn speed, accuracy, and customer service techniques for the Drive-Thru.</p>
-                    <span class="status-indicator in-progress">35% Complete</span>
+                
+                <div class="dashboard-card category-card" onclick="alert('Viewing Customer Service Path...');">
+                    <i class="fas fa-headset fa-3x" style="color: var(--medium-blue); margin-bottom: 15px;"></i>
+                    <h3>Customer Service</h3>
+                    <p>Modules on guest interactions, handling complaints, and upselling techniques.</p>
+                    <span class="status-indicator in-progress">1 In Progress</span>
                 </div>
 
-                <div class="dashboard-card">
-                    <i class="fas fa-hand-holding-usd fa-3x" style="color: #28a745; margin-bottom: 15px;"></i>
-                    <h3>POS System Basics</h3>
-                    <p>Mastering the point-of-sale system for order taking and cash handling.</p>
-                    <span class="status-indicator complete">Completed</span>
+                <div class="dashboard-card category-card" onclick="alert('Viewing Leadership Path...');">
+                    <i class="fas fa-user-tie fa-3x" style="color: #28a745; margin-bottom: 15px;"></i>
+                    <h3>Leadership Track</h3>
+                    <p>For aspiring shift managers: team building, scheduling, and conflict resolution.</p>
+                    <span class="status-indicator complete">Locked</span>
                 </div>
             </div>
 
