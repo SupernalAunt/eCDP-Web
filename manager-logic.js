@@ -1,4 +1,4 @@
-// manager-logic.js (FINAL VERSION with LIVE FIRESTORE QUERY)
+// manager-logic.js (FINAL VERSION with LIVE FIRESTORE QUERY and DELETION)
 
 const AUTHORIZED_MANAGER_EMAIL = 'management@mcd.com';
 const ALLOWED_DOMAIN = '@mcd.com';
@@ -23,7 +23,6 @@ function checkManagerAuthorization() {
         if (window.location.pathname.includes('manager.html')) {
             alert("Access Denied. Redirecting to dashboard.");
             window.location.href = "dashboard.html"; 
-            // window.stop(); // Use this if redirect is still slow
         }
     }
 }
@@ -34,6 +33,7 @@ window.onload = checkManagerAuthorization;
 if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
         try {
+            // Use the global 'firebase.auth()' object provided by the compat SDKs
             await firebase.auth().signOut();
             localStorage.clear();
             window.location.href = "index.html";
@@ -62,7 +62,6 @@ searchForm.addEventListener('submit', async (e) => {
     
     try {
         const db = firebase.firestore();
-        // Query the 'employees' collection using the email as the document ID
         const docRef = db.collection('employees').doc(emailToSearch);
         const doc = await docRef.get();
 
@@ -86,29 +85,32 @@ searchForm.addEventListener('submit', async (e) => {
 });
 
 
-// --- 4. Data Deletion Logic (Placeholder for real action) ---
-deleteDataBtn.addEventListener('click', () => {
+// --- 4. Data Deletion Logic (NEW IMPLEMENTATION) ---
+deleteDataBtn.addEventListener('click', async () => {
     const emailToDelete = document.getElementById('result-email').textContent;
     if (!emailToDelete) return;
 
-    if (confirm(`Are you absolutely sure you want to DELETE ALL DATA for ${emailToDelete}? This action cannot be undone and will not delete the Firebase Auth user.`)) {
+    if (confirm(`⚠️ WARNING: Are you absolutely sure you want to DELETE ALL PROGRESS DATA for ${emailToDelete}? This action cannot be undone and will NOT delete the Firebase Authentication user account.`)) {
         
-        searchMessage.textContent = `Attempting to delete data for ${emailToDelete}...`;
+        searchMessage.textContent = `Deleting data for ${emailToDelete}...`;
+        deleteDataBtn.disabled = true;
 
-        // --- START REAL CODE PLACEHOLDER (You would implement actual deletion here) ---
-        // EXAMPLE: 
-        // firebase.firestore().collection('employees').doc(emailToDelete).delete()
-        //     .then(() => { ... success logic ... })
-        //     .catch(() => { ... error logic ... });
-        
-        console.log(`[ACTION] Deleting data for: ${emailToDelete} (Simulated)`);
-        
-        // --- END REAL CODE PLACEHOLDER ---
+        try {
+            const db = firebase.firestore();
+            // Perform the deletion
+            await db.collection('employees').doc(emailToDelete).delete();
 
-        alert(`Data for ${emailToDelete} has been successfully deleted (Simulated).`);
-        searchResultsDiv.style.display = 'none';
-        searchMessage.textContent = `Data for ${emailToDelete} successfully removed (Manual data deletion required in Firebase console).`;
-        searchEmailInput.value = ''; // Clear search field
+            // Success feedback
+            searchResultsDiv.style.display = 'none';
+            searchMessage.textContent = `✅ Successfully deleted all progress data for ${emailToDelete}.`;
+            searchEmailInput.value = ''; // Clear search field
+            
+        } catch (error) {
+            searchMessage.textContent = `Failed to delete data. Error: ${error.message}`;
+            console.error("Firestore Deletion Error:", error);
+        } finally {
+            deleteDataBtn.disabled = false;
+        }
     }
 });
 
