@@ -1,147 +1,284 @@
-/* --- 1. BRAND COLORS AND FONT VARIABLES (MODERN BLUE) --- */
-:root {
-    --primary-blue: #003366; /* Professional Navy Blue */
-    --accent-teal: #0099CC; /* Bright Sky Blue / Teal */
-    --text-dark: #333333; /* Dark Gray for high contrast */
-    --background-light: #F4F7F9; /* Very Light Gray Body */
-    --card-white: #FFFFFF; /* Pure white for login card */
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --poppins: 'Poppins', sans-serif;
+/* ======================================= */
+/* 8. DASHBOARD LAYOUT & RESPONSIVENESS */
+/* ======================================= */
+
+.dashboard-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
 }
 
-/* --- 2. GLOBAL STYLES --- */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* Base style for sidebar (Mobile-First approach) */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: var(--primary-blue); /* Navy Blue background */
+    color: var(--card-white);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px var(--shadow-color);
+    transform: translateX(-100%); /* Initially hidden on mobile */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
 }
 
-body {
-    font-family: var(--poppins);
-    background-color: var(--background-light); /* Light gray background */
+.sidebar.active {
+    transform: translateX(0); /* Show sidebar when active (mobile) */
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 0; /* No margin on mobile */
+    transition: margin-left 0.3s ease-in-out;
+    width: 100%; /* Full width on mobile */
+}
+
+/* Sidebar Elements */
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.logo-small {
+    width: 60px;
+    height: auto;
+}
+
+.sidebar-header h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Navigation Links */
+.nav-section-title {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 10px 20px;
+    margin-top: 15px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.nav-item {
+    display: block;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+    border-left: 4px solid transparent;
+}
+
+.nav-item:hover, .nav-item.active {
+    background-color: #002244; /* Darker blue on hover/active */
+    color: var(--card-white);
+    border-left-color: var(--accent-teal); /* Teal stripe */
+}
+
+.manager-link {
+    background-color: var(--accent-teal) !important;
+    color: var(--text-dark) !important;
+    font-weight: 700;
+    text-align: center;
+    border-left: none !important;
+    margin: 10px 20px 0;
+    border-radius: 8px;
+}
+
+.manager-link:hover {
+    background-color: #0077aa !important;
+    color: var(--card-white) !important;
+}
+
+/* Footer Section */
+.sidebar-footer {
+    margin-top: auto; /* Pushes the footer to the bottom */
+    padding: 20px 20px 10px;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: 2px solid var(--accent-teal);
+    color: var(--accent-teal);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: var(--accent-teal);
+    color: var(--primary-blue);
+}
+
+
+/* Main Content Header (Mobile only) */
+.top-header {
+    background-color: var(--card-white);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.menu-toggle {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--primary-blue);
+}
+
+.user-greeting {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Content Cards */
+.content-cards {
+    display: grid;
+    gap: 20px;
+}
+
+.card {
+    background-color: var(--card-white);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-top: 5px solid var(--accent-teal); /* Teal accent bar */
+}
+
+.card h2 {
+    color: var(--primary-blue);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Progress Bar Styling */
+.progress-bar-container {
+    height: 15px;
+    background-color: #e0e0e0;
+    border-radius: 7px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--accent-teal);
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.detail-link {
+    color: var(--accent-teal);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.video-placeholder {
+    background-color: #e0e0e0;
+    height: 200px; /* Placeholder size for a video */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.logo {
-    max-width: 100px; /* Adjust size as needed */
-    height: auto;
-    margin-bottom: 20px;
-}
-
-/* --- 3. LOGIN CARD STYLING --- */
-.login-container {
-    background-color: var(--card-white);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px var(--shadow-color);
-    width: 100%;
-    max-width: 400px;
-    padding: 40px 30px;
-    text-align: center;
-}
-
-.login-header h1 {
-    font-size: 2.2rem;
-    color: var(--text-dark);
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-.login-header .accent {
-    color: var(--accent-teal); /* Teal accent */
-    font-weight: 700;
-}
-
-.login-header p {
-    color: #666;
-    margin-bottom: 30px;
-    font-size: 0.95rem;
-}
-
-/* --- 4. FORM AND INPUTS --- */
-.login-form h2 {
-    font-size: 1.4rem;
-    color: var(--primary-blue);
-    margin-bottom: 25px;
-    font-weight: 600;
-}
-
-.input-group {
-    text-align: left;
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--text-dark);
-    font-size: 0.9rem;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
+    color: #888;
+    font-style: italic;
     border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 15px;
 }
 
-.input-group input:focus {
-    border-color: var(--accent-teal);
-    box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.2); /* Soft focus ring */
-    outline: none;
-}
-
-/* --- 5. BUTTON STYLING --- */
-.primary-btn {
-    width: 100%;
-    padding: 14px;
-    background-color: var(--primary-blue); /* Navy Blue Button */
-    color: var(--card-white);
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    margin-top: 10px;
-}
-
-.primary-btn:hover {
-    background-color: #004488; /* Slightly darker blue on hover */
-}
-
-.primary-btn:active {
-    transform: scale(0.99);
-}
-
-/* --- 6. MISC LINKS AND MESSAGES --- */
-.signup-link {
-    margin-top: 20px;
-    color: #666;
-}
-
-.signup-link a {
-    color: var(--accent-teal);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s;
-}
-
-.signup-link a:hover {
-    color: var(--primary-blue);
-    text-decoration: underline;
-}
-
-.error-message {
-    color: var(--primary-red); /* Keeping red for error warnings */
-    margin-top: 15px;
-    font-weight: 600;
+.small-btn {
+    padding: 8px 15px;
     font-size: 0.9rem;
-    min-height: 18px; 
+    width: auto;
+    display: inline-block;
+}
+
+
+/* ======================================= */
+/* 9. DESKTOP & RESPONSIVE OVERRIDES */
+/* ======================================= */
+
+/* For screens larger than 1024px (Standard Desktop View) */
+@media (min-width: 1024px) {
+    
+    .sidebar {
+        position: static; /* Take it out of fixed positioning */
+        transform: translateX(0); /* Always visible */
+        width: 280px; /* Wider sidebar on desktop */
+        min-width: 280px;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 40px; /* More padding on desktop */
+    }
+
+    .top-header {
+        display: none; /* Hide the top header on desktop (no need for menu toggle) */
+    }
+
+    /* Grid Layout for the Cards on Desktop */
+    .content-cards {
+        grid-template-columns: 2fr 1fr; /* Two columns: Progress (2/3) and Quick Access (1/3) */
+        grid-template-rows: auto auto;
+    }
+
+    .progress-card {
+        grid-column: 1 / 3; /* Overall Progress spans both columns */
+    }
+    
+    /* Rearrange cards on larger screens */
+    .video-card {
+        grid-column: 1 / 2; /* Video in the left column */
+    }
+
+    .quick-access-card {
+        grid-column: 2 / 3; /* Quick Access in the right column */
+        /* You can adjust the grid-area here if you want a different vertical placement */
+    }
+}
+
+
+/* For Mobile/Tablet (Screens up to 1023px) */
+@media (max-width: 1023px) {
+    
+    .sidebar {
+        /* This keeps the sidebar fixed and off-screen by default (as defined in base styles) */
+        width: 80%;
+        max-width: 300px;
+    }
+    
+    /* When the sidebar is active, blur the background content for focus */
+    .dashboard-layout.menu-open .main-content {
+        filter: blur(2px);
+        pointer-events: none;
+    }
+    
+    /* Ensure all cards stack vertically on small screens */
+    .content-cards {
+        grid-template-columns: 1fr;
+    }
 }
