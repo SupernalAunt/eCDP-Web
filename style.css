@@ -1,284 +1,314 @@
-/* ======================================= */
-/* 8. DASHBOARD LAYOUT & RESPONSIVENESS */
-/* ======================================= */
+/* ==================================== */
+/* GLOBAL STYLES & ANIMATIONS */
+/* ==================================== */
 
-.dashboard-layout {
-    display: flex;
-    width: 100%;
+:root {
+    /* Corporate Blue Gradient - Deep Blue (#00296B) to Medium Blue (#00509D) */
+    --deep-blue: #00296B;
+    --medium-blue: #00509D;
+    --light-blue: #D0E3FF;
+    --accent-yellow: #FFC300; /* McDonald's primary color for contrast */
+    --text-dark: #333333;
+    --text-light: #ffffff;
+    --card-background: rgba(255, 255, 255, 0.95);
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    /* Set the main background gradient */
+    background: linear-gradient(135deg, var(--deep-blue) 0%, var(--medium-blue) 100%);
+    /* Apply the floating animation for a dynamic feel */
+    animation: background-float 30s ease infinite alternate;
     min-height: 100vh;
-}
-
-/* Base style for sidebar (Mobile-First approach) */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background-color: var(--primary-blue); /* Navy Blue background */
-    color: var(--card-white);
-    padding: 20px 0;
-    display: flex;
+    display: flex; /* For centering content on login/manager pages */
     flex-direction: column;
-    box-shadow: 2px 0 5px var(--shadow-color);
-    transform: translateX(-100%); /* Initially hidden on mobile */
-    transition: transform 0.3s ease-in-out;
-    z-index: 1000;
 }
 
-.sidebar.active {
-    transform: translateX(0); /* Show sidebar when active (mobile) */
+@keyframes background-float {
+    0% { background-size: 400% 400%; background-position: 0% 50%; }
+    50% { background-size: 400% 400%; background-position: 100% 50%; }
+    100% { background-size: 400% 400%; background-position: 0% 50%; }
 }
 
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-    margin-left: 0; /* No margin on mobile */
-    transition: margin-left 0.3s ease-in-out;
-    width: 100%; /* Full width on mobile */
+/* Base styles for all containers (login form, dashboard cards, etc.) */
+.container-card {
+    background: var(--card-background);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    max-width: 400px; /* Standardizing max width for login forms */
+    width: 90%;
+    margin: auto; /* Used for the login and manager pages */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Sidebar Elements */
-.sidebar-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 0 20px;
+.container-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
 }
 
-.logo-small {
-    width: 60px;
-    height: auto;
-}
-
-.sidebar-header h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-top: 5px;
-}
-
-/* Navigation Links */
-.nav-section-title {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
-    padding: 10px 20px;
-    margin-top: 15px;
-    text-transform: uppercase;
-    font-weight: 700;
-}
-
-.nav-item {
-    display: block;
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    padding: 12px 20px;
-    font-size: 0.9rem;
-    transition: background-color 0.2s, color 0.2s;
-    border-left: 4px solid transparent;
-}
-
-.nav-item:hover, .nav-item.active {
-    background-color: #002244; /* Darker blue on hover/active */
-    color: var(--card-white);
-    border-left-color: var(--accent-teal); /* Teal stripe */
-}
-
-.manager-link {
-    background-color: var(--accent-teal) !important;
-    color: var(--text-dark) !important;
-    font-weight: 700;
-    text-align: center;
-    border-left: none !important;
-    margin: 10px 20px 0;
+/* Button Styling (Used for Login and Logout) */
+button, .btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-yellow);
+    color: var(--text-dark); /* Dark text on yellow button */
+    border: none;
     border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.manager-link:hover {
-    background-color: #0077aa !important;
-    color: var(--card-white) !important;
+button:hover, .btn:hover {
+    background-color: #FFD740; /* Slightly lighter yellow */
+    transform: translateY(-1px);
 }
 
-/* Footer Section */
-.sidebar-footer {
-    margin-top: auto; /* Pushes the footer to the bottom */
-    padding: 20px 20px 10px;
+button:active, .btn:active {
+    transform: translateY(0);
 }
 
-.logout-btn {
+/* Form Input Styling */
+input[type="email"],
+input[type="password"] {
     width: 100%;
     padding: 10px;
-    background: none;
-    border: 2px solid var(--accent-teal);
-    color: var(--accent-teal);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.logout-btn:hover {
-    background-color: var(--accent-teal);
-    color: var(--primary-blue);
-}
-
-
-/* Main Content Header (Mobile only) */
-.top-header {
-    background-color: var(--card-white);
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 4px var(--shadow-color);
-}
-
-.menu-toggle {
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--primary-blue);
-}
-
-.user-greeting {
-    font-size: 0.9rem;
-    color: #666;
-}
-
-/* Content Cards */
-.content-cards {
-    display: grid;
-    gap: 20px;
-}
-
-.card {
-    background-color: var(--card-white);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    border-top: 5px solid var(--accent-teal); /* Teal accent bar */
-}
-
-.card h2 {
-    color: var(--primary-blue);
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    font-weight: 600;
-}
-
-/* Progress Bar Styling */
-.progress-bar-container {
-    height: 15px;
-    background-color: #e0e0e0;
-    border-radius: 7px;
-    overflow: hidden;
     margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1em;
 }
 
-.progress-bar {
-    height: 100%;
-    background-color: var(--accent-teal);
-    transition: width 0.5s ease-in-out;
+/* Header & Logo Styles */
+.header-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
 }
 
-.progress-text {
-    font-size: 0.9rem;
-    color: #666;
-    font-weight: 600;
-    margin-bottom: 15px;
+.logo-img {
+    max-width: 120px;
+    height: auto;
+    /* Inverting the white logo to stand out better on the blue gradient */
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
+    transition: transform 0.5s ease;
 }
 
-.detail-link {
-    color: var(--accent-teal);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
+.logo-img:hover {
+    transform: scale(1.05);
 }
 
-.video-placeholder {
-    background-color: #e0e0e0;
-    height: 200px; /* Placeholder size for a video */
+/* ==================================== */
+/* LOGIN/MANAGER PAGE SPECIFIC STYLES */
+/* ==================================== */
+
+.login-page, .manager-page {
+    /* Full-screen content centering */
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #888;
-    font-style: italic;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    min-height: 100vh;
 }
 
-.small-btn {
-    padding: 8px 15px;
-    font-size: 0.9rem;
-    width: auto;
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* ==================================== */
+/* DASHBOARD PAGE SPECIFIC STYLES */
+/* ==================================== */
+
+/* Main layout for dashboard */
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Sidebar and main content */
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: var(--deep-blue);
+    color: var(--text-light);
+    padding: 20px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-header {
+    text-align: center;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
+    margin: 0;
+    color: var(--accent-yellow);
+}
+
+.nav-link {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: var(--light-blue);
+    font-size: 1.1em;
+    border-left: 5px solid transparent;
+    transition: background-color 0.2s ease, border-left-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--medium-blue);
+    border-left-color: var(--accent-yellow);
+    color: var(--text-light);
+}
+
+/* Main Content Styling */
+.main-content {
+    padding: 40px;
+    flex-grow: 1;
+}
+
+.main-content h1 {
+    color: var(--text-light); /* Make title stand out on the gradient background */
+    margin-top: 0;
+    font-size: 2.5em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.dashboard-card {
+    background: var(--card-background);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.dashboard-card h3 {
+    color: var(--deep-blue);
+    margin-top: 0;
+}
+
+.dashboard-card p {
+    color: var(--text-dark);
+}
+
+.status-indicator {
+    padding: 5px 10px;
+    border-radius: 20px;
     display: inline-block;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
+.status-indicator.complete {
+    background-color: #28a745; /* Green */
+    color: white;
+}
 
-/* ======================================= */
-/* 9. DESKTOP & RESPONSIVE OVERRIDES */
-/* ======================================= */
+.status-indicator.in-progress {
+    background-color: #ffc107; /* Orange */
+    color: var(--text-dark);
+}
 
-/* For screens larger than 1024px (Standard Desktop View) */
-@media (min-width: 1024px) {
-    
+.status-indicator.new {
+    background-color: var(--deep-blue);
+    color: var(--text-light);
+}
+
+/* Footer (Logout Button on Dashboard) */
+.sidebar-footer {
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    width: 100%; /* Important for positioning */
+    box-sizing: border-box;
+}
+
+.sidebar-footer button {
+    background-color: #dc3545; /* Red for alert/logout action */
+    color: var(--text-light);
+}
+
+.sidebar-footer button:hover {
+    background-color: #c82333; /* Darker red */
+}
+
+/* ==================================== */
+/* MOBILE/RESPONSIVE STYLES */
+/* ==================================== */
+
+.mobile-menu-icon {
+    display: none; /* Hide on desktop */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: var(--accent-yellow);
+    color: var(--deep-blue);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    box-shadow: var(--shadow-light);
+    transition: transform 0.2s ease;
+}
+
+.mobile-menu-icon:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+
     .sidebar {
-        position: static; /* Take it out of fixed positioning */
-        transform: translateX(0); /* Always visible */
-        width: 280px; /* Wider sidebar on desktop */
-        min-width: 280px;
-        box-shadow: none;
-        border-right: 1px solid #ddd;
+        position: fixed;
+        top: 0;
+        left: -250px; /* Initially hidden */
+        height: 100%;
+        z-index: 999;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .mobile-menu-icon {
+        display: block;
     }
 
     .main-content {
-        margin-left: 0;
-        padding: 40px; /* More padding on desktop */
+        padding: 20px;
     }
 
-    .top-header {
-        display: none; /* Hide the top header on desktop (no need for menu toggle) */
-    }
-
-    /* Grid Layout for the Cards on Desktop */
-    .content-cards {
-        grid-template-columns: 2fr 1fr; /* Two columns: Progress (2/3) and Quick Access (1/3) */
-        grid-template-rows: auto auto;
-    }
-
-    .progress-card {
-        grid-column: 1 / 3; /* Overall Progress spans both columns */
-    }
-    
-    /* Rearrange cards on larger screens */
-    .video-card {
-        grid-column: 1 / 2; /* Video in the left column */
-    }
-
-    .quick-access-card {
-        grid-column: 2 / 3; /* Quick Access in the right column */
-        /* You can adjust the grid-area here if you want a different vertical placement */
-    }
-}
-
-
-/* For Mobile/Tablet (Screens up to 1023px) */
-@media (max-width: 1023px) {
-    
-    .sidebar {
-        /* This keeps the sidebar fixed and off-screen by default (as defined in base styles) */
-        width: 80%;
-        max-width: 300px;
-    }
-    
-    /* When the sidebar is active, blur the background content for focus */
-    .dashboard-layout.menu-open .main-content {
-        filter: blur(2px);
-        pointer-events: none;
-    }
-    
-    /* Ensure all cards stack vertically on small screens */
-    .content-cards {
-        grid-template-columns: 1fr;
+    .sidebar-footer {
+        position: static; /* Let it flow normally */
+        margin-top: 20px;
     }
 }
