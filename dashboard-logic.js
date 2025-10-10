@@ -1,6 +1,4 @@
-// dashboard-logic.js (FINAL VERSION with Firestore Integration and Course Completion)
-
-// NOTE: This file assumes the global 'firebase' object is available from dashboard.html scripts
+// dashboard-logic.js (FINAL CLEAN VERSION)
 
 const AUTHORIZED_MANAGER_EMAIL = 'management@mcd.com';
 
@@ -14,7 +12,7 @@ const sidebar = document.getElementById('sidebar');
 const completeButton = document.getElementById('complete-FoodSafety101');
 
 
-// --- 1. User Initialization and Data Check ---
+// --- 1. User Initialization and Data Check (CLEANED UP DEFAULT COURSES) ---
 async function initializeUserData(userEmail) {
     const db = firebase.firestore();
     const userRef = db.collection('employees').doc(userEmail);
@@ -32,8 +30,10 @@ async function initializeUserData(userEmail) {
                 completedCourses: 0,
                 lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
                 courses: {
+                    // Use only courses that are relevant now, initialized to 'new'
                     "FoodSafety101": { status: "new", completion: 0 },
-                    "DriveThruOps": { status: "in-progress", completion: 35 } // Example in-progress
+                    "KitchenPrep": { status: "new", completion: 0 },
+                    "ClosingProcedures": { status: "new", completion: 0 } 
                 }
             });
             console.log("New user data created successfully.");
@@ -49,7 +49,8 @@ async function initializeUserData(userEmail) {
 }
 
 
-// --- 2. Course Completion Logic (NEW FUNCTION) ---
+// --- 2. Course Completion Logic ---
+// ... (The rest of this logic remains the same as before) ...
 async function markCourseComplete(courseId) {
     const user = firebase.auth().currentUser;
     if (!user) {
@@ -70,26 +71,18 @@ async function markCourseComplete(courseId) {
         
         const data = doc.data();
         
-        // Check if the course is already completed to prevent double-counting
         if (data.courses && data.courses[courseId] && data.courses[courseId].status === 'completed') {
             alert(`${courseId} is already marked as complete!`);
             return;
         }
         
-        // 2. Perform the atomic update
         await userRef.update({
-            // Update the specific course status and completion
             [`courses.${courseId}.status`]: 'completed',
             [`courses.${courseId}.completion`]: 100,
-            
-            // Increment the completed course count
             completedCourses: firebase.firestore.FieldValue.increment(1),
-            
-            // Simple calculation for overall progress (e.g., assuming 10 courses total = 10% each)
             overallProgress: firebase.firestore.FieldValue.increment(10)
         });
 
-        // 3. Update the UI
         document.getElementById(`status-${courseId}`).textContent = 'Completed';
         document.getElementById(`status-${courseId}`).classList.remove('new', 'in-progress');
         document.getElementById(`status-${courseId}`).classList.add('complete');
@@ -117,7 +110,7 @@ if (completeButton) {
 }
 
 
-// --- 3. Update UI on Load (NEW FUNCTION) ---
+// --- 3. Update UI on Load ---
 async function updateDashboardUI(userEmail) {
     const db = firebase.firestore();
     const userRef = db.collection('employees').doc(userEmail);
@@ -128,7 +121,6 @@ async function updateDashboardUI(userEmail) {
             const data = doc.data();
             const courseId = 'FoodSafety101'; 
 
-            // Check and update the FoodSafety101 card based on stored data
             if (data.courses && data.courses[courseId] && data.courses[courseId].status === 'completed') {
                 const statusElement = document.getElementById(`status-${courseId}`);
                 
@@ -139,7 +131,7 @@ async function updateDashboardUI(userEmail) {
                 if (completeButton) {
                     completeButton.disabled = true;
                     completeButton.textContent = 'Completed!';
-                    completeButton.style.backgroundColor = '#28a745'; // Green color for complete
+                    completeButton.style.backgroundColor = '#28a745';
                 }
             }
         }
@@ -154,15 +146,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         // User is signed in.
         const userEmail = user.email.toLowerCase();
-        // Capitalize the first part of the email for the welcome message
         const userName = userEmail.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
 
-        // Update welcome message
         if (welcomeMessage) {
             welcomeMessage.textContent = `Welcome, ${userName}!`;
         }
 
-        // Check and display Manager Link
         if (userEmail === AUTHORIZED_MANAGER_EMAIL) {
             localStorage.setItem('userRole', 'manager');
             if (managerLink) {
@@ -172,10 +161,7 @@ firebase.auth().onAuthStateChanged(function(user) {
             localStorage.setItem('userRole', 'employee');
         }
 
-        // Initialize user data (create if first login)
         initializeUserData(userEmail); 
-        
-        // Update the visible UI based on the data
         updateDashboardUI(userEmail); 
 
     } else {
@@ -185,13 +171,13 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 
-// --- 5. Logout Functionality ---
+// --- 5. Logout Functionality & Mobile Menu Toggle ---
 if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
         try {
             await firebase.auth().signOut();
             localStorage.clear();
-            // Redirect is handled by the onAuthStateChanged listener
+            
         } catch (error) {
             console.error("Logout Error:", error);
             alert("Logout failed. Please try again.");
@@ -199,7 +185,6 @@ if (logoutBtn) {
     });
 }
 
-// --- 6. Mobile Menu Toggle ---
 if (mobileMenuIcon && sidebar) {
     mobileMenuIcon.addEventListener('click', () => {
         sidebar.classList.toggle('open');
