@@ -1,54 +1,41 @@
-// firebase-auth.js (CORRECTED for Reliable Redirect)
+// firebase-auth.js (FINAL VERSION for Login Stability and Domain Check)
 
-// NOTE: We MUST use the full Firebase v9 imports to ensure the module dependencies are handled correctly
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-// We must re-initialize the app context if we cannot reliably import the 'auth' object
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+// NOTE: This file now assumes 'firebase.auth()' and 'firebase.initializeApp()' 
+// are available globally because of the -compat.js links in index.html.
 
-// --- 1. Re-define Config (for reliability, though this should be in firebase-config.js) ---
-// For the browser to reliably load this script as a module AND execute the login logic, 
-// we will temporarily include the config details here. If you prefer to keep them separate,
-// ensure firebase-config.js is correctly exporting its 'auth' object.
-const firebaseConfig = {
-    apiKey: "AIzaSyAOwtZ9hlq2tjh-wHyBtEF5gFpMMZQl0so",
-    authDomain: "ecdp-web.firebaseapp.com",
-    projectId: "ecdp-web",
-    storageBucket: "ecdp-web.firebasestorage.app",
-    messagingSenderId: "52884539513",
-    appId: "1:52884539513:web:90fb6a60e1699196152ca8",
-    measurementId: "G-6GP618SEYW"
-};
+const AUTHORIZED_MANAGER_EMAIL = 'management@mcd.com';
+const ALLOWED_DOMAIN = '@mcd.com';
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-
-// --- 2. Element References ---
 const loginForm = document.getElementById('login-form');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const errorMessage = document.getElementById('error-message');
 
-
-// --- 3. Login Logic with Role Handling ---
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const email = emailInput.value;
+        const email = emailInput.value.toLowerCase();
         const password = passwordInput.value;
 
-        errorMessage.textContent = ''; // Clear previous error
+        errorMessage.textContent = '';
         
+        // --- 1. Domain Restriction Check ---
+        if (!email.endsWith(ALLOWED_DOMAIN)) {
+            errorMessage.textContent = `Access Denied: Only emails ending in ${ALLOWED_DOMAIN} are allowed.`;
+            return;
+        }
+
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            // Use the global 'firebase.auth()' object provided by the compat SDKs
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
             
             console.log("SUCCESS: User logged in:", user.email);
             
-            // Determine User Role
+            // --- 2. Role Determination ---
             let role = 'employee';
-            if (user.email === 'management@ecdp-web.firebaseapp.com') {
+            if (user.email === AUTHORIZED_MANAGER_EMAIL) {
                 role = 'manager';
             }
 
@@ -56,7 +43,7 @@ if (loginForm) {
             localStorage.setItem('userEmail', user.email);
             localStorage.setItem('userRole', role);
             
-            // CRITICAL: Force the redirect. This line should now execute reliably.
+            // --- 3. Redirect (Should now be stable) ---
             window.location.href = "dashboard.html"; 
 
         } catch (error) {
@@ -68,11 +55,11 @@ if (loginForm) {
             } else if (errorCode === 'auth/invalid-email') {
                 friendlyMessage = "The email address is not valid.";
             } else {
-                friendlyMessage = "An unknown login error occurred. Check console.";
+                console.error("Firebase Auth Error:", errorCode, error.message);
+                friendlyMessage = "An unknown login error occurred. Check console for details.";
             }
 
             errorMessage.textContent = friendlyMessage;
-            console.error("Firebase Auth Error:", errorCode, error.message);
         }
     });
 }
